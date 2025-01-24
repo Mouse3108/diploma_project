@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/styles.css'%}" />
+{% endblock %}
+
+{% block title %}
+    Наши специалисты
+{% endblock %}
+
+{% block content %}
+<h1 class="text-center m-2 text-primary">У нас только высококвалифицированные специалисты</h1>
+<div class="row row-cols-1 row-cols-md-3 g-4 m-2">
+    {% for specialist in specialists %}
+        <div class="col">
+            <div class="card">
+                <h4 class="card-title text-center p-1">
+                    {{ specialist.first_name }} {{ specialist.last_name }}
+                </h4>
+                {% if specialist.avatar %}
+                    <div class="d-flex justify-content-center">
+                        <img src="{{ specialist.avatar.url }}" alt="Avatar" class="img-fluid rounded"
+                             style="max-width: 250px;">
+                    </div>
+                {% else %}
+                    <div class="d-flex justify-content-center">
+                        <span class="bg-success text-white d-flex align-items-center justify-content-center m-2 fs-1"
+                              style="width: 250px; height: 250px; border-radius: 50%;">
+                            <span>{{ specialist.first_name|slice:":1" }}{{ specialist.last_name|slice:":1" }}</span>
+                        </span>
+                    </div>
+                {% endif %}
+                <h5 class="card-text text-center p-1 text-muted">{{ specialist.job_title }}</h5>
+                <a href="{% url 'users:specialist_detail' specialist.id %}" class="btn btn-success">
+                    <i class="bi bi-card-list"></i>
+                    <span class="d-none d-sm-inline">Подробнее</span>
+                </a>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

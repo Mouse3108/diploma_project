@@ -18,9 +18,10 @@ class Article(models.Model):
     slug = models.SlugField(unique=True, verbose_name='Адрес страницы')
     category = models.ForeignKey(
         'Category',
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name='article',
         null=True,
+        blank=True,
         default=None,
         verbose_name='Категория'
     )
@@ -81,30 +82,27 @@ class Category(models.Model):
 
 
 class Offer(models.Model):
-    STATUS_CHOICES = (
-        ('0', 'На модерации'),
-        ('1', 'Отклонено'),
-        ('2', 'Опубликовано'),
-    )
     author = models.ForeignKey(
-        'users.Client',
+        'users.MyUser',
         related_name='offer',
         verbose_name='Автор',
-        on_delete=models.CASCADE
+        on_delete=models.SET_NULL,
+        null=True
     )
     published_date = models.DateTimeField(
         auto_now_add=True,
         verbose_name='Дата публикации'
     )
-    text = models.TextField(verbose_name='Текст')
-    status = models.IntegerField(
-        choices=STATUS_CHOICES,
-        default=0,
-        verbose_name='Статус'
+    answer = models.ManyToManyField(
+        'information.Answer',
+        blank=True,
+        related_name='offer_answer',
+        verbose_name='Ответ'
     )
+    text = models.TextField(verbose_name='Текст')
 
     def __str__(self):
-        return {self.text}
+        return self.text
 
     class Meta:
         verbose_name = "Предложение, пожелание"
@@ -112,22 +110,29 @@ class Offer(models.Model):
 
 
 class Comment(models.Model):
-    STATUS_CHOICES = (
-        ('0', 'На модерации'),
-        ('1', 'Отклонен'),
-        ('2', 'Опубликован'),
-    )
-    CATEGORY_CHOICES = (
-        ('0', 'Общая оценка'),
-        ('1', 'Оценка специалиста'),
-        ('2', 'Оценка статьи'),
-        ('3', 'Оценка тренинга'),
-    )
+    STATUS_CHOICES = [
+        (0, 'На модерации'),
+        (1, 'Отклонен'),
+        (2, 'Опубликован'),
+    ]
+    CATEGORY_CHOICES = [
+        (0, 'Общая оценка'),
+        (1, 'Оценка специалиста'),
+        (2, 'Оценка статьи'),
+        (3, 'Оценка тренинга'),
+    ]
     author = models.ForeignKey(
-        'users.Client',
+        'users.MyUser',
         related_name='comment',
         verbose_name='Автор',
-        on_delete=models.CASCADE
+        on_delete=models.SET_NULL,
+        null=True
+    )
+    answer = models.ManyToManyField(
+        'information.Answer',
+        blank=True,
+        related_name='comment_answer',
+        verbose_name='Ответ'
     )
     published_date = models.DateTimeField(
         auto_now_add=True,
@@ -156,21 +161,19 @@ class Comment(models.Model):
 class Answer(models.Model):
     author = models.ForeignKey(
         'users.MyUser',
-        related_name='answer',
+        related_name='answer_author',
         verbose_name='Автор',
-        on_delete=models.CASCADE
+        on_delete=models.SET_NULL,
+        null=True
     )
     published_date = models.DateTimeField(
         auto_now_add=True,
         verbose_name='Дата публикации'
     )
     text = models.TextField(verbose_name='Текст')
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    question = GenericForeignKey('content_type', 'object_id')
 
     def __str__(self):
-        return f'{self.author.last_name} - {self.text}'
+        return f'{self.author.username} - {self.text}'
 
     class Meta:
         verbose_name = "Ответ"

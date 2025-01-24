@@ -35,14 +35,13 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(Offer)
 class OfferAdmin(admin.ModelAdmin):
     list_display = (
-        'published_date', 'author', 'text', 'status'
+        'published_date', 'author', 'text'
     )
     list_display_links = (
         'published_date', 'author', 'text'
     )
     search_fields = ('text', 'author',)
     list_filter = ('author', 'published_date')
-    list_editable = ('status',)
     readonly_fields = ('published_date',)
 
 
@@ -63,6 +62,6 @@ class CommentAdmin(admin.ModelAdmin):
 class AnswerAdmin(admin.ModelAdmin):
     list_display = ('published_date', 'author', 'text')
     list_display_links = ('published_date', 'author', 'text')
-    search_fields = ('text', 'author',)
+    search_fields = ('text', 'author')
     list_filter = ('author', 'published_date')
     readonly_fields = ('published_date',)

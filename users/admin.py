@@ -1,23 +1,28 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from users.models import *
+
 from events.models import *
 from information.models import *
 from django.utils.html import format_html
+from .forms import UserRegisterForm
+
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.utils.translation import gettext_lazy as _
 
 
 @admin.register(MyUser)
-class MyUserAdmin(admin.ModelAdmin):
+class CustomUserAdmin(UserAdmin):
     list_display = (
-        'display_photo', 'first_name', 'last_name',
-        'job_title', 'phone', 'email',
+        'display_photo', 'username', 'first_name', 'last_name',
+        'job_title', 'phone', 'email', 'date_birth',
         'all_consultations', 'all_trainings'
     )
     list_display_links = (
-        'display_photo', 'first_name', 'last_name',
-        'job_title', 'phone', 'email'
+        'display_photo', 'username', 'first_name', 'last_name',
+        'job_title', 'phone', 'email', 'date_birth',
     )
-    list_filter = ('job_title',)
+    list_filter = ('job_title', 'is_staff',)
     readonly_fields = ('show_photo',)
 
     def display_photo(self, obj):
@@ -38,8 +43,21 @@ class MyUserAdmin(admin.ModelAdmin):
             return "-"
     show_photo.short_description = 'Фото'
 
-    fieldsets = UserAdmin.fieldsets + (
-        ('Дополнительная информация', {'fields': ('show_photo', 'avatar', 'job_title', 'phone')}),
+    fieldsets = (
+        (None, {'fields': ('username', 'email', 'password')}),
+        ('Личные данные', {'fields': (
+            'show_photo', 'avatar', 'first_name', 'last_name',
+            'date_birth', 'job_title', 'phone', 'job_speciality')}),
+        ('Права доступа', {'fields': ('is_active', 'is_staff', 'is_superuser',
+                                      'groups', 'user_permissions')}),
+        ('Важные даты', {'fields': ('last_login', 'date_joined')}),
+    )
+
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('username', 'email', 'password1', 'password2'),
+        }),
     )
 
     def all_consultations(self, obj):
@@ -92,59 +110,11 @@ class EducationAdmin(admin.ModelAdmin):
             'fields': (
                 'educational_institution',
                 'status',
+                'psychologist',
                 'speciality',
                 'year',
                 'show_photo',
                 'photo'
-            )
-        }),
-    )
-
-
-@admin.register(Client)
-class ClientAdmin(admin.ModelAdmin):
-    list_display = (
-        'display_photo', 'username', 'first_name', 'last_name',
-        'date_birth', 'email', 'phone'
-    )
-    list_display_links = (
-        'display_photo', 'username', 'first_name', 'last_name',
-        'date_birth', 'email', 'phone'
-    )
-    search_fields = ('username', 'first_name', 'last_name')
-    list_filter = ('date_birth', 'first_name', 'last_name',)
-    readonly_fields = ('show_photo',)
-
-    def display_photo(self, obj):
-        if obj.avatar:
-            return format_html(
-                '<img src="{}" width="50" />', obj.avatar.url
-            )
-        else:
-            return "-"
-    display_photo.short_description = 'Аватар'
-
-    def show_photo(self, obj):
-        if obj.avatar:
-            return format_html(
-                '<img src="{}" width="200" />', obj.avatar.url
-            )
-        else:
-            return "-"
-    show_photo.short_description = 'Аватар'
-
-    fieldsets = (
-        (None, {
-            'fields': (
-                'username',
-                'password',
-                'first_name',
-                'last_name',
-                'date_birth',
-                'email',
-                'phone',
-                'show_photo',
-                'avatar'
             )
         }),
     )

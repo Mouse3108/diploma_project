@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/styles.css'%}" />
+{% endblock %}
+
+{% block title %}
+    Отзывы
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {% if user.is_staff %}
+            {% include 'comment_for_personal_include.html' %}
+            {% if page_obj.has_other_pages %}
+                {% include 'pagination_include.html' %}
+            {% endif %}
+        {% else %}
+            {% include 'comment_for_client_include.html' %}
+            {% if page_obj.has_other_pages %}
+                {% include 'pagination_include.html' %}
+            {% endif %}
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const replyButtons = document.querySelectorAll('.reply-button');
+
+        replyButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const commentId = this.getAttribute('data-comment-id');
+                const replyForm = document.getElementById('reply-form-' + commentId);
+
+                if (replyForm.style.display === 'none' || replyForm.style.display === '') {
+                    replyForm.style.display = 'block';
+                } else {
+                    replyForm.style.display = 'none';
+                }
+            });
+        });
+
+        const cancelButtons = document.querySelectorAll('.cancel-button');
+        cancelButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const replyForm = this.closest('.reply-form');
+                replyForm.style.display = 'none';
+            });
+        });
+    });
+</script>
+{% endblock %}

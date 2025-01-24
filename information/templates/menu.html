@@ -1,0 +1,23 @@
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/styles.css'%}" />
+{% endblock %}
+
+{% block nav %}
+
+<nav class="navbar navbar-expand-lg bg-body-tertiary py-1">
+<div class="container-fluid bg-info">
+    <div class="d-flex flex-column flex-lg-row justify-content-around p-3">
+        {% for item in menu %}
+            <a href="{% url item.alias %}"
+                class="btn {% if item.alias == page_alias %}btn-success
+                           {% else %}btn-primary{% endif %}
+                           d-flex align-items-center justify-content-between m-1">
+            <span><i class="bi {{ item.icon }} me-2"></i>{{ item.title }}</span>
+            </a>
+        {% endfor %}
+    </div>
+</div>
+</nav>
+
+{% endblock %}

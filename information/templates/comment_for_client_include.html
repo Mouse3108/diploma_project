@@ -1,0 +1,50 @@
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/styles.css'%}" />
+{% endblock %}
+
+{% if user.is_authenticated %}
+    <h1 class="text-center m-2 text-primary">Оцените нашу работу!</h1>
+    <form method="post" action="{% url 'information:comments' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="hidden" name="page" value="{{ request.GET.page }}">
+        <button type="submit" class="btn btn-sm btn-success m-1">Отправить</button>
+    </form>
+{% else %}
+    <h1 class="text-center m-2 text-primary">Отзывы наших клиентов</h1>
+    <h5 class="text-center m-2">Вы сможете оставить свой отзыв после регистрации</h5>
+{% endif %}
+{% for comment in comments %}
+    {% if comment.author == user %}
+        <div class="m-1 p-3 rounded" style="background-color: #d4edda;">
+    {% else %}
+        <div class="bg-light m-1 p-3 rounded">
+    {% endif %}
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="mb-0">
+                {% if comment.author.avatar %}
+                    <img src="{{ comment.author.avatar.url }}" alt="Avatar" class="rounded-circle img-fluid me-2"
+                         style="width: 30px; height: 30px;">
+                {% else %}
+                    <i class="bi bi-person-fill me-1"></i>
+                {% endif %}
+                    {% if comment.author.username %}
+                        {{ comment.author.username }}
+                    {% else %}
+                        Пользователь удалён
+                    {% endif %}
+            </h6>
+            <small class="text-muted">
+                <i class="bi bi-clock me-1"></i>
+                {{ comment.published_date|date:"d M Y H:i" }}
+            </small>
+        </div>
+        <small class="text-muted">
+            <i class="bi bi-list me-1"></i>
+            {{ comment.get_category_display }}
+        </small>
+        <div class="mb-2">{{ comment.text }}</div>
+    </div>
+    {% include 'comment_answer_include.html' %}
+{% endfor %}

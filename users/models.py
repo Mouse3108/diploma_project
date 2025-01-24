@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractUser, AbstractBaseUser
-from django.contrib.auth.hashers import make_password
 from django.db import models
+from tinymce.models import HTMLField
 
 
 class MyUser(AbstractUser):
@@ -8,7 +8,13 @@ class MyUser(AbstractUser):
         upload_to='avatars/users',
         blank=True,
         null=True,
-        verbose_name=''
+        verbose_name='Аватар'
+    )
+    date_birth = models.DateField(
+        blank=True,
+        null=True,
+        default=None,
+        verbose_name='Дата рождения'
     )
     phone = models.CharField(
         max_length=20,
@@ -18,21 +24,28 @@ class MyUser(AbstractUser):
     )
     job_title = models.CharField(
         max_length=50,
+        blank=True,
+        null=True,
         verbose_name='Должность'
+    )
+    job_speciality = HTMLField(
+        blank=True,
+        null=True,
+        verbose_name='Направления работы'
     )
 
     class Meta:
-        verbose_name = 'Сотрудник'
-        verbose_name_plural = 'Сотрудники'
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
 
 
 class Education(models.Model):
     STATUS_CHOICES = [
-        ('ВУЗ', 'Высшее образование'),
-        ('ПК', 'Повышение квалификации'),
-        ('С', 'Семинар'),
-        ('ОК', 'Обучающий курс'),
-        ('Д', 'Другое'),
+        (1, 'Высшее образование'),
+        (2, 'Повышение квалификации'),
+        (3, 'Семинар'),
+        (4, 'Обучающий курс'),
+        (0, 'Другое'),
     ]
     educational_institution = models.CharField(
         max_length=200,
@@ -40,7 +53,7 @@ class Education(models.Model):
     )
     status = models.IntegerField(
         choices=STATUS_CHOICES,
-        default='Д',
+        default=0,
         verbose_name='Статус'
     )
     speciality = models.TextField(
@@ -57,7 +70,7 @@ class Education(models.Model):
         verbose_name=''
     )
     psychologist = models.ForeignKey(
-        'MyUser',
+        'users.MyUser',
         on_delete=models.CASCADE,
         related_name='psychologist',
         verbose_name='Психолог'
@@ -71,55 +84,4 @@ class Education(models.Model):
         verbose_name_plural = "Образование"
 
 
-class Client(AbstractBaseUser):
-    avatar = models.ImageField(
-        upload_to='avatars/clients',
-        blank=True,
-        null=True,
-        verbose_name=''
-    )
-    username = models.CharField(
-        max_length=20,
-        unique=True,
-        verbose_name='Ник'
-    )
-    password = models.CharField(
-        max_length=100,
-        verbose_name='Пароль'
-    )
-    first_name = models.CharField(
-        max_length=50,
-        null=True,
-        default=None,
-        verbose_name='Имя'
-    )
-    last_name = models.CharField(
-        max_length=200,
-        null=True,
-        default=None,
-        verbose_name='Фамилия'
-    )
-    date_birth = models.DateField(
-        blank=True,
-        null=True,
-        default=None,
-        verbose_name='Дата рождения'
-    )
-    email = models.EmailField(
-        unique=True,
-        verbose_name='Email'
-    )
-    phone = models.CharField(
-        max_length=20,
-        unique=True,
-        blank=True,
-        null=True,
-        verbose_name='Телефон'
-    )
 
-    def __str__(self):
-        return f'{self.username} - {self.first_name} {self.last_name}'
-
-    class Meta:
-        verbose_name = "Клиент"
-        verbose_name_plural = "Клиенты"

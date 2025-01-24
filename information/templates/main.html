@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/styles.css'%}" />
+{% endblock %}
+
+{% block title %}
+    Главная страница
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1 class="text-center m-2 text-primary">Добро пожаловать!</h1>
+        <p class="fst-italic text-center m-2 fs-5">
+            В нашем Центре мы понимаем, что каждый из нас сталкивается с трудностями,
+            которые могут затруднить жизнь и повлиять на общее самочувствие.
+            Мы готовы поддержать вас на пути к эмоциональному благополучию и гармонии.
+        </p>
+        <h2 class="text-center m-2 text-success">Почему выбирают нас?</h2>
+        <div class="row mt-4 text-center">
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title text-success">Профессионализм и опыт</h5>
+                        <p class="fst-italic card-text">
+                            Наши специалисты — это команда высококвалифицированных психологов
+                            с многолетним опытом работы. В нашем центре вы найдете поддержку, понимание и заботу.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title text-success">Индивидуальный подход</h5>
+                        <p class="fst-italic card-text">
+                            Каждая история уникальна, и мы это понимаем.
+                            Наша цель — не только помочь вам справиться с текущими трудностями,
+                            но и научить вас справляться с проблемами в будущем.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title text-success">Безопасная и поддерживающая среда</h5>
+                        <p class="fst-italic card-text">
+                            В нашем центре вы можете говорить о своих чувствах и переживаниях без страха осуждения.
+                            Мы гарантируем полную конфиденциальность и уважение к вашему личному пространству.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p class="text-center fst-italic m-2 fs-5">
+            Если вы чувствуете, что вам нужна поддержка, не стесняйтесь обратиться к нам.
+            Мы готовы выслушать вас и предложить решения, которые помогут вам вернуться к полноценной жизни.
+            Наша команда поможет вам разобраться в ваших чувствах, найти пути выхода из сложных ситуаций
+            и научиться справляться с трудностями.
+        </p>
+        <h3 class="text-center m-2 text-primary">Ваше благополучие — наша приоритетная задача!</h3>
+        <h3 class="text-center m-2 text-primary">Начните свой путь к эмоциональному здоровью вместе с нами!</h3>
+    </div>
+{% endblock %}

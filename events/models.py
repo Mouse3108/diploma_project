@@ -17,13 +17,15 @@ class Consultation(models.Model):
     status = models.IntegerField(choices=STATUS_CHOICES, default=0, verbose_name='Статус')
     psychologist = models.ForeignKey(
         'users.MyUser',
-        related_name='consultations',
+        related_name='psychologist_consultations',
+        blank=True,
+        null=True,
         verbose_name='Психолог',
         on_delete=models.CASCADE
     )
     client = models.ForeignKey(
-        'users.Client',
-        related_name='consultations',
+        'users.MyUser',
+        related_name='client_consultations',
         verbose_name='Клиент',
         blank=True,
         null=True,
@@ -55,11 +57,13 @@ class Training(models.Model):
     status = models.IntegerField(choices=STATUS_CHOICES, default=0, verbose_name='Статус')
     psychologists = models.ManyToManyField(
         'users.MyUser',
-        verbose_name='Психологи'
+        verbose_name='Психологи',
+        related_name='psychologist_training'
     )
     clients = models.ManyToManyField(
-        'users.Client',
-        verbose_name='Клиенты'
+        'users.MyUser',
+        verbose_name='Клиенты',
+        related_name='client_training'
     )
 
     def __str__(self):
@@ -68,20 +72,3 @@ class Training(models.Model):
     class Meta:
         verbose_name = "Тренинг"
         verbose_name_plural = "Тренинги"
-
-
-class TrainingsPhoto(models.Model):
-    photo = models.ImageField(
-        upload_to='trainings photo',
-        verbose_name=''
-    )
-    training = models.ForeignKey(
-        'Training',
-        related_name='trainings_photo',
-        verbose_name='Тренинг',
-        on_delete=models.CASCADE
-    )
-
-    class Meta:
-        verbose_name = "Фото тренинга"
-        verbose_name_plural = "Фото тренингов"

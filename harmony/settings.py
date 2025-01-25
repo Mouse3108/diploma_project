@@ -1,5 +1,6 @@
 from pathlib import Path
 from dotenv import load_dotenv
+from django.urls import reverse_lazy
 import os
 
 load_dotenv()
@@ -130,7 +131,8 @@ INTERNAL_IPS = [
 ]
 
 LOGIN_REDIRECT_URL = 'main'  # Перенаправление после успешного входа
-LOGIN_URL = 'login'  # URL страницы входа
+# LOGIN_URL = 'login'  # URL страницы входа
+LOGIN_URL = reverse_lazy('login')  # URL страницы входа
 
 # Конфигурация для отправки уведомлений в Telegram
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")

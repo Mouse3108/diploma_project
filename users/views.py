@@ -25,17 +25,12 @@ from django.views import View
 menu = [
     {"title": "Главная", "alias": "main", "icon": "bi-house"},
     {"title": "Наши специалисты", "alias": "users:specialists", "icon": "bi-person"},
-    # {"title": "Советы психолога", "alias": "psychologist_advice", "icon": "bi-chat-dots"},
+    {"title": "Советы психолога", "alias": "information:articles", "icon": "bi-chat-dots"},
     # {"title": "Тестирование", "alias": "testing", "icon": "bi-check-circle"},
     # {"title": "Консультации", "alias": "consultations", "icon": "bi-clipboard"},
     # {"title": "Тренинги", "alias": "trainings", "icon": "bi-briefcase"},
-    {"title": "Ваши отзывы", "alias": "information:comments", "icon": "bi-star"},
+    {"title": "Отзывы клиентов", "alias": "information:comments", "icon": "bi-list-stars"},
     {"title": "Ваши предложения", "alias": "information:offers", "icon": "bi-lightbulb"}
-]
-
-client_menu = [
-    {"title": "Мои консультации", "alias": "information:comments", "icon": "bi-chat"},
-    {"title": "Мои тренинги", "alias": "information:offers", "icon": "bi-book"}
 ]
 
 
@@ -136,7 +131,6 @@ class ClientDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['menu'] = menu
-        context['client_menu'] = client_menu
         return context
 
 
@@ -158,7 +152,6 @@ class ClientUpdateView(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['menu'] = menu
-        context['client_menu'] = client_menu
         return context
 
     def form_valid(self, form):
@@ -182,7 +175,6 @@ class ChangePasswordView(LoginRequiredMixin, PasswordChangeView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['menu'] = menu
-        context['client_menu'] = client_menu
         return context
 
 
@@ -245,3 +237,5 @@ class ChangePasswordPersonalView(LoginRequiredMixin, PasswordChangeView):
         context = super().get_context_data(**kwargs)
         context['menu'] = menu
         return context
+
+

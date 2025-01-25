@@ -1,0 +1,48 @@
+<a href="{% url 'information:article_detail' article.slug %}" class="card m-1 text-decoration-none">
+<div class="card m-1">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <small class="text-muted">
+                <i class="bi bi-bookmark-dash text-primary me-1"></i>
+                {{ article.category.name }}
+            </small>
+            <small class="text-muted">
+                <i class="bi bi-calendar text-primary me-1"></i>
+                {{ article.published_date|date:"d M Y H:i" }}
+            </small>
+        </div>
+        {% if user.is_staff %}
+            <div class="d-flex justify-content-end align-items-center mb-2">
+                <small class="text-muted">
+                    <i class="bi {% if article.status == 0 %}bi-exclamation-circle text-warning
+                                 {% else %} bi bi-check-circle text-success
+                                 {% endif %} me-1"></i>
+                    {{ article.get_status_display }}
+                </small>
+            </div>
+        {% endif %}
+        <h4 class="card-title text-success p-2">{{ article.title }}</h4>
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="text-muted">
+                <i class="bi bi-hand-thumbs-up-fill text-success me-1"></i>
+                {{ article.positive_grade.count }}
+                <i class="bi bi-hand-thumbs-down-fill text-danger me-1"></i>
+                {{ article.negative_grade.count }}
+            </div>
+            <div class="text-muted">
+                <i class="bi bi-eye text-primary me-1"></i>
+                {{ article.views }}
+                {% with article.views|stringformat:"d" as views %}
+                    {% if views|slice:"-1:" == "1" and views|slice:"-2:" != "11" %}
+                        просмотр
+                    {% elif views|slice:"-1:" in "234" and views|slice:"-2:|-1" != "1" %}
+                        просмотра
+                    {% else %}
+                        просмотров
+                    {% endif %}
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+</div>
+</a>

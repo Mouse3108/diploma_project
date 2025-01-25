@@ -5,7 +5,7 @@
        <span><i class="bi bi-house m-2"></i>Личный кабинет</span>
     </a>
     <a href="{% url 'admin:index' %}"
-       class="btn btn-info btn-block mb-2">
+       class="btn btn-info btn-block mb-2" target="_blank" rel="noopener noreferrer">
        <span><i class="bi bi-gear m-2"></i>Админпанель</span>
     </a>
     <a href="{% url 'users:personal_update' user.pk %}"
@@ -13,11 +13,4 @@
        {% else %}btn-info{% endif %} btn-block mb-2">
        <span><i class="bi bi-pencil m-2"></i>Редактировать данные</span>
     </a>
-    {% for menu in client_menu %}
-        <a href="{% url menu.alias %}"
-            class="btn {% if menu.alias == page_alias %}btn-primary
-            {% else %}btn-info{% endif %} btn-block mb-2">
-            <span><i class="bi {{ menu.icon }} m-2"></i>{{ menu.title }}</span>
-        </a>
-    {% endfor %}
 </div>

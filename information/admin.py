@@ -7,22 +7,30 @@ from information.models import *
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
     list_display = (
-        'title', 'text', 'category', 'published_date',
-        'views', 'positive_grade', 'negative_grade'
+        'title', 'category', 'published_date', 'status',
+        'views', 'positive_grade_count', 'negative_grade_count'
     )
     list_display_links = (
-        'title', 'text', 'published_date',
-        'views', 'positive_grade', 'negative_grade'
+        'title', 'published_date', 'views'
     )
-    search_fields = ('title', 'text', 'category',)
+    search_fields = (
+        'title', 'text', 'category'
+    )
     list_filter = (
-        'category', 'published_date', 'views',
-        'positive_grade', 'negative_grade')
-    list_editable = ('category',)
+        'category', 'published_date', 'status')
+    list_editable = ('category', 'status',)
     readonly_fields = (
-        'published_date', 'views',
+        'published_date', 'views', 'slug',
         'positive_grade', 'negative_grade'
     )
+
+    def positive_grade_count(self, obj):
+        return obj.positive_grade.count()
+    positive_grade_count.short_description = 'Положительные оценки'
+
+    def negative_grade_count(self, obj):
+        return obj.negative_grade.count()
+    negative_grade_count.short_description = 'Отрицательные оценки'
 
 
 @admin.register(Category)

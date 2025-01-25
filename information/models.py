@@ -6,15 +6,20 @@ from unidecode import unidecode
 from django.urls import reverse
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from tinymce.models import HTMLField
 
 
 class Article(models.Model):
+    STATUS_CHOICES = (
+        (1, 'Опубликовано'),
+        (0, 'Черновик'),
+    )
     title = models.CharField(
         max_length=200,
         unique=True,
         verbose_name='Заголовок'
     )
-    text = models.TextField(verbose_name='Текст')
+    text = HTMLField(verbose_name='Текст')
     slug = models.SlugField(unique=True, verbose_name='Адрес страницы')
     category = models.ForeignKey(
         'Category',
@@ -29,13 +34,22 @@ class Article(models.Model):
         auto_now_add=True,
         verbose_name='Дата публикации'
     )
+    status = models.IntegerField(
+        choices=STATUS_CHOICES,
+        default=0,
+        verbose_name='Статус'
+    )
     views = models.PositiveIntegerField(default=0, verbose_name='Просмотры')
-    positive_grade = models.PositiveIntegerField(
-        default=0, verbose_name='Положительные оценки'
-    )
-    negative_grade = models.IntegerField(
-        default=0, verbose_name='Отрицательные оценки'
-    )
+    positive_grade = models.ManyToManyField(
+        'users.MyUser',
+        related_name='plus',
+        blank=True,
+        verbose_name='Положительные оценки')
+    negative_grade = models.ManyToManyField(
+        'users.MyUser',
+        related_name='minus',
+        blank=True,
+        verbose_name='Отрицательные оценки')
 
     def __str__(self):
         return self.title
@@ -71,7 +85,7 @@ class Category(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return {self.name}
+        return self.name
 
     def get_absolute_url(self):
         return reverse("article_by_category", args=[str(self.slug)])

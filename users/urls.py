@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import *
+from users.views import *
+from information.views import *
 
 app_name = 'users'
 
@@ -15,4 +16,5 @@ urlpatterns = [
     path('personal/<int:pk>/', PersonalDetailView.as_view(), name='personal'),
     path('personal/<int:pk>/update/', PersonalUpdateView.as_view(), name='personal_update'),
     path('change-password-personal/', ChangePasswordPersonalView.as_view(), name='change_password_personal'),
+    path('client/<int:pk>/comments/', ClientCommentView.as_view(), name='client_comments'),
 ]

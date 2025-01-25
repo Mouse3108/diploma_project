@@ -9,11 +9,19 @@
        {% else %}btn-info{% endif %} btn-block mb-2">
        <span><i class="bi bi-pencil m-2"></i>Редактировать данные</span>
     </a>
-    {% for menu in client_menu %}
-        <a href="{% url menu.alias %}"
-            class="btn {% if menu.alias == page_alias %}btn-primary
-            {% else %}btn-info{% endif %} btn-block mb-2">
-            <span><i class="bi {{ menu.icon }} m-2"></i>{{ menu.title }}</span>
-        </a>
-    {% endfor %}
+    <a href="{% url 'users:client_comments' user.pk %}"
+       class="btn {% if request.resolver_match.view_name == 'users:client_comments' %}btn-primary
+       {% else %}btn-info{% endif %} btn-block mb-2">
+       <span><i class="bi bi-stars m-2"></i>Мои отзывы</span>
+    </a>
+    <a href="{% url 'information:comments' %}"
+       class="btn {% if request.resolver_match.view_name == 'information:comments' %}btn-primary
+       {% else %}btn-info{% endif %} btn-block mb-2">
+       <span><i class="bi bi-chat m-2"></i>Мои консультации</span>
+    </a>
+    <a href="{% url 'information:offers' %}"
+       class="btn {% if request.resolver_match.view_name == 'information:offers' %}btn-primary
+       {% else %}btn-info{% endif %} btn-block mb-2">
+       <span><i class="bi bi-book m-2"></i>Мои тренинги</span>
+    </a>
 </div>

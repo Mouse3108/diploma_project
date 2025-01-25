@@ -4,13 +4,19 @@
 {% endblock %}
 
 {% if user.is_authenticated %}
-    <h1 class="text-center m-2 text-primary">Оцените нашу работу!</h1>
-    <form method="post" action="{% url 'information:comments' %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="hidden" name="page" value="{{ request.GET.page }}">
-        <button type="submit" class="btn btn-sm btn-success m-1">Отправить</button>
-    </form>
+    {% if is_blacklisted %}
+        <h2 class="text-center m-2 text-danger">
+            К сожалению, Вы находитесь в черном списке и не можете оставлять отзывы
+        </h2>
+    {% else %}
+        <h1 class="text-center m-2 text-primary">Оцените нашу работу!</h1>
+        <form method="post" action="{% url 'information:comments' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="hidden" name="page" value="{{ request.GET.page }}">
+            <button type="submit" class="btn btn-sm btn-success m-1">Отправить</button>
+        </form>
+    {% endif %}
 {% else %}
     <h1 class="text-center m-2 text-primary">Отзывы наших клиентов</h1>
     <h5 class="text-center m-2">Вы сможете оставить свой отзыв после регистрации</h5>

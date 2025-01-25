@@ -11,19 +11,20 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View, TemplateView, CreateView, UpdateView, ListView, DetailView
 from django.views.generic.edit import FormMixin
 from .forms import *
-# import json
+import json
 from django.utils.http import urlencode
 from urllib.parse import unquote
+from django.utils.decorators import method_decorator
 
 
 menu = [
     {"title": "Главная", "alias": "main", "icon": "bi-house"},
     {"title": "Наши специалисты", "alias": "users:specialists", "icon": "bi-person"},
-    # {"title": "Советы психолога", "alias": "psychologist_advice", "icon": "bi-chat-dots"},
+    {"title": "Советы психолога", "alias": "information:articles", "icon": "bi-chat-dots"},
     # {"title": "Тестирование", "alias": "testing", "icon": "bi-check-circle"},
     # {"title": "Консультации", "alias": "consultations", "icon": "bi-clipboard"},
     # {"title": "Тренинги", "alias": "trainings", "icon": "bi-briefcase"},
-    {"title": "Ваши отзывы", "alias": "information:comments", "icon": "bi-star"},
+    {"title": "Отзывы клиентов", "alias": "information:comments", "icon": "bi-list-stars"},
     {"title": "Ваши предложения", "alias": "information:offers", "icon": "bi-lightbulb"}
 ]
 
@@ -65,6 +66,7 @@ class OfferView(ListView):
         context['page_alias'] = 'information:offers'
         context['form'] = OfferForm()
         context['answer_form'] = AnswerForm()
+        context['is_blacklisted'] = self.request.user.groups.filter(name='Черный список').exists()
         return context
 
     def post(self, request, *args, **kwargs):
@@ -98,6 +100,7 @@ class CommentView(ListView):
         context['page_alias'] = 'information:comments'
         context['form'] = CommentForm()
         context['answer_form'] = AnswerForm()
+        context['is_blacklisted'] = self.request.user.groups.filter(name='Черный список').exists()
         return context
 
     def post(self, request, *args, **kwargs):
@@ -109,6 +112,22 @@ class CommentView(ListView):
             messages.success(request, 'Ваш отзыв добавлен и находится на модерации!')
             page = request.POST.get('page', 1)
             return redirect(f"{reverse('information:comments')}?page={page}")
+
+
+class ClientCommentView(ListView):
+    model = Comment
+    template_name = 'client_comment.html'
+    context_object_name = 'client_comments'
+
+    def get_queryset(self):
+        return (Comment.objects.filter(author=self.request.user).prefetch_related('answer').
+                select_related('author').order_by('-published_date'))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['menu'] = menu
+        context['page_alias'] = 'users:client_comments'
+        return context
 
 
 class AnswerView(ListView):
@@ -147,7 +166,7 @@ class AnswerCommentView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['page_alias'] = 'information:answers_comment'
+        context['page_alias'] = 'information:comment'
         context['form'] = AnswerForm()
         return context
 
@@ -165,5 +184,127 @@ class AnswerCommentView(ListView):
             return redirect(f"{reverse('information:comments')}?page={page}")
 
 
+class ArticlesView(ListView):
+    model = Article
+    template_name = 'articles.html'
+    context_object_name = 'articles'
+    paginate_by = 4
 
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            queryset = (Article.objects.prefetch_related('positive_grade', 'negative_grade').
+                        select_related('category').
+                        order_by("-published_date"))
+        else:
+            queryset = (Article.objects.filter(status=1).
+                        prefetch_related('positive_grade', 'negative_grade').
+                        select_related('category').
+                        order_by("-published_date"))
+        search_query = unquote(self.request.GET.get("search", ""))
+        if search_query:
+            query = Q(title__icontains=search_query) | Q(text__icontains=search_query)
+            queryset = queryset.filter(query)
+        queryset = queryset.distinct().order_by("-published_date")
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['menu'] = menu
+        context['page_alias'] = 'information:articles'
+        search_query = unquote(self.request.GET.get("search", ""))
+        context['search_query'] = urlencode({'search': search_query})
+        context['categories'] = Category.objects.order_by("name")
+        return context
+
+
+class ArticlesByCategoryView(ListView):
+    model = Article
+    template_name = 'articles.html'
+    context_object_name = 'articles'
+    paginate_by = 4
+
+    def get_queryset(self):
+        self.category = get_object_or_404(Category, slug=self.kwargs['slug'])
+        if self.request.user.is_staff:
+            queryset = (Article.objects.filter(category__slug=self.kwargs['slug']).
+                        prefetch_related('positive_grade', 'negative_grade').
+                        select_related('category').
+                        order_by("-published_date"))
+        else:
+            queryset = (Article.objects.filter(status=1, category__slug=self.kwargs['slug']).
+                        prefetch_related('positive_grade', 'negative_grade').
+                        select_related('category').
+                        order_by("-published_date"))
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['menu'] = menu
+        context['page_alias'] = 'information:articles'
+        context['categories'] = Category.objects.order_by("name")
+        return context
+
+
+class ArticleDetailView(DetailView):
+    model = Article
+    template_name = 'article_detail.html'
+    context_object_name = 'article'
+
+    def get_queryset(self):
+        return (Article.objects.prefetch_related('positive_grade', 'negative_grade').
+                select_related('category'))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['menu'] = menu
+        context['page_alias'] = 'information:articles'
+        context['categories'] = Category.objects.order_by("name")
+        return context
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if f'article_{self.object.id}_viewed' not in request.session and not request.user.is_staff:
+            Article.objects.filter(slug=self.object.slug).update(views=F('views') + 1)
+            request.session[f'article_{self.object.id}_viewed'] = True
+            self.object.refresh_from_db()
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
+
+
+class NegativeGradeArticleView(LoginRequiredMixin, View):
+    def post(self, request, slug):
+        article = get_object_or_404(Article, slug=slug)
+        user = request.user
+        positive_grade = article.positive_grade.filter(id=user.id).exists()
+        negative_grade = article.negative_grade.filter(id=user.id).exists()
+        if not negative_grade:
+            if not positive_grade:
+                article.negative_grade.add(user)
+        else:
+            article.negative_grade.remove(user)
+        return JsonResponse({
+            'positive_grade': positive_grade,
+            'negative_grade': negative_grade,
+            'positive_grade_count': article.positive_grade.count(),
+            'negative_grade_count': article.negative_grade.count()
+        })
+
+
+class PositiveGradeArticleView(LoginRequiredMixin, View):
+    def post(self, request, slug):
+        article = get_object_or_404(Article, slug=slug)
+        user = request.user
+        positive_grade = article.positive_grade.filter(id=user.id).exists()
+        negative_grade = article.negative_grade.filter(id=user.id).exists()
+        if not positive_grade:
+            if not negative_grade:
+                article.positive_grade.add(user)
+        else:
+            article.positive_grade.remove(user)
+        return JsonResponse({
+            'positive_grade': positive_grade,
+            'negative_grade': negative_grade,
+            'positive_grade_count': article.positive_grade.count(),
+            'negative_grade_count': article.negative_grade.count()
+        })
 

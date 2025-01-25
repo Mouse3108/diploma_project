@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/styles.css'%}" />
+{% endblock %}
+
+{% block title %}
+    {{ article.title }}
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center">
+    <a href="javascript:void(0);" onclick="window.history.back();"
+        class="btn btn-success d-none m-2 d-md-flex align-items-center">
+        <i class="bi bi-arrow-left-circle-fill fs-4"></i>
+        <span class="ms-2">К списку публикаций</span>
+    </a>
+    <a href="javascript:void(0);" onclick="window.history.back();"
+        class="btn btn-success d-flex m-2 d-md-none align-items-center">
+        <i class="bi bi-arrow-left-circle-fill fs-4"></i>
+    </a>
+</div>
+<div class="container mx-auto mb-2">
+    <h1 class="text-center m-1 text-success fst-italic">{{ article.title }}</h1>
+    <div class="row align-items-center">
+        <div class="col-md-2 align-self-start d-flex flex-column">
+            <h4 class="text-center m-1 text-primary">Категории</h4>
+            {% for category in categories %}
+                <div>
+                    <a href="{% url 'information:article_category' category.slug %}"
+                        class="btn
+                        {% if request.resolver_match.view_name == 'information:article_category' and request.resolver_match.kwargs.slug == category.slug %}
+                        btn-primary{% else %}btn-info{% endif %} btn-block mb-1" style="width: 100%;">
+                    {{ category.name }}
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="col-md-10 align-self-start">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <small class="text-muted">
+                            <i class="bi bi-bookmark-dash text-primary me-1"></i>
+                            {{ article.category.name }}
+                        </small>
+                        <small class="text-muted">
+                            <i class="bi bi-calendar text-primary me-1"></i>
+                            {{ article.published_date|date:"d M Y H:i" }}
+                        </small>
+                    </div>
+                    {% if user.is_staff %}
+                    <div class="d-flex justify-content-end align-items-center mb-2">
+                        <small class="text-muted">
+                            <i class="bi {% if article.status == 0 %}bi-exclamation-circle text-warning
+                                         {% else %} bi bi-check-circle text-success
+                                         {% endif %} me-1"></i>
+                                {{ article.get_status_display }}
+                        </small>
+                    </div>
+                    {% endif %}
+                    <div class="card-text">{{ article.text|safe }}</div>
+                    <div class="d-flex justify-content-between align-items-center mb    -2">
+                        <div class="text-muted">
+                        {% if user.is_authenticated and not user.is_staff %}
+                            <button id="positive_grade_button" class="btn btn-outline-success btn-sm"
+                                    data-slug="{{ article.slug }}">
+                                <i class="bi {% if user in article.positive_grade.all %}bi-hand-thumbs-up-fill
+                                             {% else %}bi-hand-thumbs-up{% endif %}">
+                                </i>Нравится
+                            </button>
+                            <span id="positive_grade_count">{{article.positive_grade.count}}</span>
+                            <button id="negative_grade_button" class="btn btn-outline-danger btn-sm"
+                                    data-slug="{{ article.slug }}">
+                                <i class="bi {% if user in article.negative_grade.all %}bi-hand-thumbs-down-fill
+                                             {% else %}bi-hand-thumbs-down{% endif %}">
+                                </i>Не нравится
+                            </button>
+                            <span id="negative_grade_count">{{article.negative_grade.count}}</span>
+                            {% else %}
+                                <i class="bi bi-hand-thumbs-up-fill text-success"></i>
+                                Понравилось {{article.positive_grade.count}}
+                                <i class="bi bi-hand-thumbs-down-fill text-danger"></i>
+                                Не понравилось {{article.negative_grade.count}}
+                            {% endif %}
+                        </div>
+                        <div class="text-muted">
+                            <i class="bi bi-eye text-primary me-1"></i>
+                            {{ article.views }}
+                                {% with article.views|stringformat:"d" as views %}
+                                    {% if views|slice:"-1:" == "1" and views|slice:"-2:" != "11" %}
+                                        просмотр
+                                    {% elif views|slice:"-1:" in "234" and views|slice:"-2:|-1" != "1" %}
+                                        просмотра
+                                    {% else %}
+                                        просмотров
+                                    {% endif %}
+                                {% endwith %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock%}
+

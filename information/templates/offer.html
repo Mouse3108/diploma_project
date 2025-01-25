@@ -29,32 +29,3 @@
         {% endif %}
     </div>
 {% endblock %}
-
-{% block scripts %}
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const replyButtons = document.querySelectorAll('.reply-button');
-
-        replyButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const offerId = this.getAttribute('data-offer-id');
-                const replyForm = document.getElementById('reply-form-' + offerId);
-
-                if (replyForm.style.display === 'none' || replyForm.style.display === '') {
-                    replyForm.style.display = 'block';
-                } else {
-                    replyForm.style.display = 'none';
-                }
-            });
-        });
-
-        const cancelButtons = document.querySelectorAll('.cancel-button');
-        cancelButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const replyForm = this.closest('.reply-form');
-                replyForm.style.display = 'none';
-            });
-        });
-    });
-</script>
-{% endblock %}

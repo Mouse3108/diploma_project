@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/styles.css'%}" />
+{% endblock %}
+
+{% block title %}
+    Тренинги
+{% endblock %}
+
+{% block content %}
+<h3 class="text-center m-2 text-primary fst-italic">
+    Психологический тренинг — вид активного обучения навыкам поведения и развития личности.
+</h3>
+<h4 class="text-center m-2 text-primary fst-italic">
+    В тренинге участнику предлагают проделать те или иные упражнения,
+</h4>
+<h4 class="text-center m-2 text-primary fst-italic">
+    ориентированные на развитие или демонстрацию психологических качеств или навыков.
+</h4>
+<h4 class="text-center m-2 text-primary fst-italic">
+    Ключевым принципом, обеспечивающим эффективное обучение и развитие,
+</h4>
+<h4 class="text-center m-2 text-primary fst-italic">
+    является постоянное сочетание в тренинге всех форм деятельности:
+</h4>
+<h4 class="text-center m-2 text-primary fst-italic">
+    общение, игра, обучение, труд.
+</h4>
+<hr>
+{% block training_content %}
+    {% if user.is_authenticated and user.is_staff %}
+        {% include 'training/training_for_personal_include.html' %}
+    {% else %}
+        {% include 'training/training_for_client_include.html' %}
+    {% endif %}
+{% endblock %}
+{% endblock %}

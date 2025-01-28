@@ -1,0 +1,40 @@
+{% extends 'client/client.html' %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/styles.css'%}" />
+{% endblock %}
+
+{% block title %}
+    Отзывы {{ user.username }}
+{% endblock %}
+
+{% block client_content %}
+    <div class="container">
+        <h4 class="card-text text-center text-success fst-italic">Ваши отзывы</h4>
+        {% for comment in client_comments %}
+            <div class="bg-light m-1 p-3 rounded">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <small class="text-muted">
+                        <i class="bi bi-clock me-1"></i>
+                        {{ comment.published_date|date:"d M Y H:i" }}
+                    </small>
+                    <small class="text-muted">
+                        <i class="bi {% if comment.status == 0 %}bi-exclamation-circle text-warning
+                                     {% elif comment.status == 1 %}bi bi-x-circle text-danger
+                                     {% else %} bi bi-check-circle text-success
+                                     {% endif %} me-1"></i>
+                        {{ comment.get_status_display }}
+                    </small>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <small class="text-muted">
+                        <i class="bi bi-list me-1"></i>
+                        {{ comment.get_category_display }}
+                    </small>
+                </div>
+                <div class="mb-2">{{ comment.text }}</div>
+            </div>
+            {% include 'answer/comment_answer_include.html' %}
+        {% endfor %}
+    </div>
+{% endblock %}

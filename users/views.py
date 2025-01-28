@@ -27,15 +27,15 @@ menu = [
     {"title": "Наши специалисты", "alias": "users:specialists", "icon": "bi-person"},
     {"title": "Советы психолога", "alias": "information:articles", "icon": "bi-chat-dots"},
     # {"title": "Тестирование", "alias": "testing", "icon": "bi-check-circle"},
-    # {"title": "Консультации", "alias": "consultations", "icon": "bi-clipboard"},
-    # {"title": "Тренинги", "alias": "trainings", "icon": "bi-briefcase"},
+    {"title": "Консультации", "alias": "events:consultations", "icon": "bi-clipboard"},
+    {"title": "Тренинги", "alias": "events:trainings", "icon": "bi-briefcase"},
     {"title": "Отзывы клиентов", "alias": "information:comments", "icon": "bi-list-stars"},
     {"title": "Ваши предложения", "alias": "information:offers", "icon": "bi-lightbulb"}
 ]
 
 
 class RegisterView(View):
-    template_name = 'register.html'
+    template_name = 'all_users/register.html'
 
     def get(self, request):
         form = UserRegisterForm()
@@ -53,7 +53,7 @@ class RegisterView(View):
 
 
 class LoginView(View):
-    template_name = 'login.html'
+    template_name = 'all_users/login.html'
 
     def get(self, request):
         form = UserLoginForm()
@@ -67,7 +67,7 @@ class LoginView(View):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                messages.success(request, f'Добро пожаловать, {username}!')
+                messages.success(request, f'Добро пожаловать, {user.username}!')
                 return redirect('main')
             else:
                 messages.error(request, 'Неверные учетные данные. Попробуйте снова.')
@@ -83,7 +83,7 @@ class LogoutView(View):
 
 class SpecialistsView(ListView):
     model = MyUser
-    template_name = 'specialists.html'
+    template_name = 'personal/specialists.html'
     context_object_name = 'specialists'
 
     def get_queryset(self):
@@ -98,7 +98,7 @@ class SpecialistsView(ListView):
 
 class SpecialistDetailView(DetailView):
     model = MyUser
-    template_name = 'specialist_detail.html'
+    template_name = 'personal/specialist_detail.html'
     context_object_name = 'specialist'
 
     def get_queryset(self):
@@ -114,7 +114,7 @@ class SpecialistDetailView(DetailView):
 
 class ClientDetailView(DetailView):
     model = MyUser
-    template_name = 'client.html'
+    template_name = 'client/client.html'
     context_object_name = 'client'
 
     def get_queryset(self):
@@ -137,7 +137,7 @@ class ClientDetailView(DetailView):
 class ClientUpdateView(LoginRequiredMixin, UpdateView):
     model = MyUser
     form_class = ClientUpdateForm
-    template_name = 'client_update.html'
+    template_name = 'client/client_update.html'
 
     def get_success_url(self):
         return reverse_lazy('users:client', kwargs={'pk': self.object.pk})
@@ -167,7 +167,7 @@ class ClientUpdateView(LoginRequiredMixin, UpdateView):
 
 
 class ChangePasswordView(LoginRequiredMixin, PasswordChangeView):
-    template_name = 'change_password.html'
+    template_name = 'client/change_password.html'
 
     def get_success_url(self):
         return reverse_lazy('users:client_update', kwargs={'pk': self.request.user.pk})
@@ -180,7 +180,7 @@ class ChangePasswordView(LoginRequiredMixin, PasswordChangeView):
 
 class PersonalDetailView(DetailView):
     model = MyUser
-    template_name = 'personal.html'
+    template_name = 'personal/personal.html'
     context_object_name = 'personal'
 
     def get_queryset(self):
@@ -203,7 +203,7 @@ class PersonalDetailView(DetailView):
 class PersonalUpdateView(LoginRequiredMixin, UpdateView):
     model = MyUser
     form_class = PersonalUpdateForm
-    template_name = 'personal_update.html'
+    template_name = 'personal/personal_update.html'
 
     def get_success_url(self):
         return reverse_lazy('users:personal', kwargs={'pk': self.object.pk})
@@ -228,7 +228,7 @@ class PersonalUpdateView(LoginRequiredMixin, UpdateView):
 
 
 class ChangePasswordPersonalView(LoginRequiredMixin, PasswordChangeView):
-    template_name = 'change_password_personal.html'
+    template_name = 'personal/change_password_personal.html'
 
     def get_success_url(self):
         return reverse_lazy('users:personal_update', kwargs={'pk': self.request.user.pk})

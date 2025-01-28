@@ -8,6 +8,7 @@ urlpatterns = [
     path('answers/', AnswerView.as_view(), name='answers'),
     path('answers_comment/', AnswerCommentView.as_view(), name='answers_comment'),
     path('comments/', CommentView.as_view(), name='comments'),
+    path('comments/category/<int:category>/', CommentsByCategoryView.as_view(), name='comments_category'),
     path('articles/', ArticlesView.as_view(), name="articles"),
     path('articles/<slug:slug>/', ArticleDetailView.as_view(), name='article_detail'),
     path('articles/category/<slug:slug>/', ArticlesByCategoryView.as_view(), name='article_category'),

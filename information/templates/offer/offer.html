@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/styles.css'%}" />
+{% endblock %}
+
+{% block title %}
+    Предложения
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {% if user.is_authenticated %}
+            {% if user.is_staff %}
+                {% include 'offer/offer_for_personal_include.html' %}
+                {% if page_obj.has_other_pages %}
+                    {% include 'pagination_include.html' %}
+                {% endif %}
+            {% else %}
+                {% include 'offer/offer_for_client_include.html' %}
+                {% if page_obj.has_other_pages %}
+                    {% include 'pagination_include.html' %}
+                {% endif %}
+            {% endif %}
+        {% else %}
+            <h1 class="text-center m-2 text-primary">
+                Оставлять предложения и пожелания могут только зарегистрированные пользователи!
+            </h1>
+        {% endif %}
+    </div>
+{% endblock %}

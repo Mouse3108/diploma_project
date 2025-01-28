@@ -1,0 +1,78 @@
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/styles.css'%}" />
+{% endblock %}
+
+{% if is_blacklisted %}
+    <h2 class="text-center m-2 text-danger">
+        К сожалению, Вы находитесь в черном списке и не можете записаться на консультацию
+    </h2>
+{% else %}
+    <h3 class="text-center m-2">
+        Чтобы записаться на консультацию, выберите специалиста, дату и время
+    </h3>
+    <h3 class="text-center m-2">
+        и нажмите кнопку
+        <a id="consultationUpdateLink" href="#" class="btn btn-success">
+            <i class="bi bi-clipboard-check"></i>
+            <span class="d-none d-sm-inline">Записаться</span>
+        </a>
+    </h3>
+{% endif %}
+<div class="row row-cols-1 row-cols-md-3 g-4 m-2">
+    {% for psychologist in psychologists %}
+        <div class="col">
+            <div class="card">
+                <h4 class="card-title text-center p-1 text-success fst-italic">
+                    {{ psychologist.first_name }} {{ psychologist.last_name }}
+                </h4>
+                <h5 class="card-text text-center text-muted fst-italic">{{ psychologist.job_title }}</h5>
+                {% for date in dates %}
+                    <div class="btn btn-info m-1 mt-3 disabled" tabindex="-1" aria-disabled="true">
+                        {{date}}, {{ date|date:"l" }}
+                    </div>
+                    <div class="row row-cols-4 m-2">
+                        {% for consultation in consultations %}
+                            {% if consultation.psychologist.id == psychologist.id and consultation.date == date %}
+                                <input type="radio"
+                                       class="btn-check"
+                                       name="options"
+                                       id="{{psychologist.id}}_{{date}}_{{consultation.time}}"
+                                       data-pk="{{ consultation.pk }}"
+                                       autocomplete="off">
+                                <label class="btn btn-outline-info text-dark"
+                                       for="{{psychologist.id}}_{{date}}_{{consultation.time}}">
+                                    {{consultation.time|time:'H:i'}}
+                                </label>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+{% block script %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const radioButtons = document.querySelectorAll('input[type="radio"]');
+
+    radioButtons.forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            updateConsultationLink(this);
+        });
+    });
+
+    function updateConsultationLink(radio) {
+        const pk = radio.getAttribute('data-pk');
+        const link = document.getElementById('consultationUpdateLink');
+
+        if (link && pk) {
+            const url = "{% url 'events:consultation_update' '0' %}".replace('0', pk);
+            link.href = url;
+        }
+    }
+});
+</script>
+{% endblock %}

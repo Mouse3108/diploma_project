@@ -1,0 +1,29 @@
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/styles.css'%}" />
+{% endblock %}
+
+{% for answer in offer.answer.all %}
+    <div class="fst-italic other-comment ps-5 rounded">
+        <hr class="m-2">
+        <div class="d-flex justify-content-between align-items-center">
+            <h6 class="mb-0">
+                {% if answer.author.avatar %}
+                    <img src="{{ answer.author.avatar.url }}" alt="Avatar" class="rounded-circle img-fluid me-2"
+                         style="width: 30px; height: 30px;">
+                {% else %}
+                    <i class="bi bi-person-fill me-1"></i>
+                {% endif %}
+                {% if answer.author.username %}
+                    {{ answer.author.job_title }} {{ answer.author.first_name }} {{ answer.author.last_name }}
+                {% else %}
+                    Сотрудник
+                {% endif %}
+            </h6>
+            <small class="text-muted">
+                <i class="bi bi-clock me-1"></i>{{ answer.published_date|date:"d M Y H:i" }}
+            </small>
+        </div>
+        <div class="mb-2">{{ answer.text }}</div>
+    </div>
+{% endfor %}

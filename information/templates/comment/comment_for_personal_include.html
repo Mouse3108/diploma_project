@@ -1,0 +1,56 @@
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/styles.css'%}" />
+{% endblock %}
+
+<h4 class="text-center m-2 text-primary">Отзывы пользователей:</h4>
+    {% for comment in comments %}
+        <div class="bg-light other-comment mb-3 p-3 rounded">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="mb-0">
+                    {% if comment.author.avatar %}
+                        <img src="{{ comment.author.avatar.url }}" alt="Avatar" class="rounded-circle img-fluid me-2"
+                             style="width: 30px; height: 30px;">
+                    {% else %}
+                        <i class="bi bi-person-fill me-1"></i>
+                    {% endif %}
+                    {% if comment.author.username %}
+                        {{ comment.author.username }}
+                    {% else %}
+                        Пользователь удалён
+                    {% endif %}
+                </h6>
+                <small class="text-muted">
+                    <i class="bi bi-clock me-1"></i>{{ comment.published_date|date:"d M Y H:i" }}
+                </small>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <small class="text-muted">
+                    <i class="bi bi-list me-1"></i>
+                    {{ comment.get_category_display }}
+                </small>
+                <small class="text-muted">
+                    <i class="bi {% if comment.status == 0 %}bi-exclamation-circle text-warning
+                                 {% elif comment.status == 1 %}bi bi-x-circle text-danger
+                                 {% else %} bi bi-check-circle text-success
+                                 {% endif %} me-1"></i>
+                    {{ comment.get_status_display }}
+                </small>
+            </div>
+            <div class="mb-2">{{ comment.text }}</div>
+            <button class="btn btn-sm btn-info reply-button" data-comment-id="{{ comment.id }}">
+                <i class="bi bi-reply"></i> Ответить
+            </button>
+                <div class="reply-form" id="reply-form-{{ comment.id }}" style="display: none;">
+                    <form method="post" action="{% url 'information:answers_comment' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="comment_id" value="{{ comment.id }}">
+                        {{ answer_form.as_p }}
+                        <input type="hidden" name="page" value="{{ request.GET.page }}">
+                        <button type="submit" class="btn btn-success">Отправить</button>
+                        <button type="button" class="btn btn-danger cancel-button">Отмена</button>
+                    </form>
+                </div>
+                {% include 'answer/comment_answer_include.html' %}
+        </div>
+    {% endfor %}

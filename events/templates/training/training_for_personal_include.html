@@ -1,0 +1,114 @@
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/styles.css'%}" />
+{% endblock %}
+
+{% if not user.is_superuser %}
+<h4 class="card-title text-center p-1 text-success">
+    Ваше расписание:
+</h4>
+<div class="row align-items-center m-2">
+    <div class="col-md-2 align-self-start">
+        <div class="card">
+            <div class="card-body">
+                <p class="card-text fst-italic">
+                    Дата и время
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2 align-self-start">
+        <div class="card">
+            <div class="card-body">
+                <p class="card-text fst-italic">
+                    Тренинг
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 align-self-start">
+        <div class="card">
+            <div class="card-body">
+                <p class="card-text fst-italic">
+                    Ведущие
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3 align-self-start">
+        <div class="card">
+            <div class="card-body">
+                <p class="card-text fst-italic">
+                    Участники
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2 mb-3 align-self-start">
+        <div class="card">
+            <div class="card-body">
+                <p class="card-text fst-italic">
+                    Статус
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% for training in trainings %}
+    <div class="row align-items-center m-2">
+        <div class="col-md-2 align-self-start">
+            <div class="card">
+                <div class="card-body">
+                    <p class="card-text">
+                        {{training.date}} в {{training.time|time:'H:i'}}
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 align-self-start">
+            <div class="card">
+                <div class="card-body">
+                    <p class="card-text">
+                        {{training.name}}
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 align-self-start">
+            <div class="card">
+                <div class="card-body">
+                    {% for psychologist in training.psychologists.all %}
+                        <p class="card-text">
+                            {{psychologist.first_name}} {{psychologist.last_name}}
+                        </p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3 align-self-start">
+            <div class="card">
+                <div class="card-body">
+                    {% for client in training.clients.all %}
+                        <p class="card-text">
+                            {{client.first_name}} {{client.last_name}}
+                        </p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 mb-3 align-self-start">
+            <div class="card">
+                <div class="card-body">
+                    <p class="card-text fst-italic">
+                        {{training.get_status_display }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+{% else %}
+    <h4 class="card-title text-center p-1 text-success">
+        Список тренингов для Вас доступен в админпанели
+    </h4>
+{% endif %}

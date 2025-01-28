@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/styles.css'%}" />
+{% endblock %}
+
+{% block title %}
+    Отзывы
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {% if user.is_staff %}
+            {% include 'comment/comment_for_personal_include.html' %}
+            {% if page_obj.has_other_pages %}
+                {% include 'pagination_include.html' %}
+            {% endif %}
+        {% else %}
+            {% include 'comment/comment_for_client_include.html' %}
+            {% if page_obj.has_other_pages %}
+                {% include 'pagination_include.html' %}
+            {% endif %}
+        {% endif %}
+    </div>
+{% endblock %}

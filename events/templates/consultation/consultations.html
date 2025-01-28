@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/styles.css'%}" />
+{% endblock %}
+
+{% block title %}
+    Консультации
+{% endblock %}
+
+{% block content %}
+<h3 class="text-center m-2 text-primary fst-italic">Психологическое консультирование –
+    индивидуальная работа психолога с клиентом.
+</h3>
+<h4 class="text-center m-2 text-primary fst-italic">
+    Это профессиональная поддержка для тех, кто столкнулся с жизненными трудностями
+</h4>
+<h4 class="text-center m-2 text-primary fst-italic">
+    или хочет улучшить своё качество жизни.
+</h4>
+<h4 class="text-center m-2 text-primary fst-italic">
+    Консультирование помогает осознать и изменить привычные модели поведения,
+</h4>
+<h4 class="text-center m-2 text-primary fst-italic">
+    чтобы принимать важные решения, справляться с проблемами и достигать целей.
+</h4>
+<hr>
+
+{% block consultation_content %}
+    {% if user.is_authenticated and not user.is_staff %}
+        {% include 'consultation/consultation_for_client_include.html' %}
+    {% elif user.is_authenticated and user.is_staff %}
+        {% include 'consultation/consultation_for_personal_include.html' %}
+    {% else %}
+        <h5 class="text-center m-2">
+            Записаться на консультацию могут только зарегистрированные пользователи!
+        </h5>
+    {% endif %}
+{% endblock %}
+{% endblock %}

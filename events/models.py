@@ -2,6 +2,7 @@ from django.db import models
 from users.models import *
 from information.models import *
 from django.core.validators import MaxValueValidator
+from tinymce.models import HTMLField
 
 
 class Consultation(models.Model):
@@ -11,15 +12,25 @@ class Consultation(models.Model):
         (2, 'Назначена'),
         (3, 'Проведена'),
     ]
-    description = models.TextField(verbose_name='Описание')
+    description = models.TextField(
+        verbose_name='Описание',
+        blank=True
+    )
+    price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name='Стоимость'
+    )
     date = models.DateField(verbose_name='Дата')
     time = models.TimeField(verbose_name='Время')
-    status = models.IntegerField(choices=STATUS_CHOICES, default=0, verbose_name='Статус')
+    status = models.IntegerField(
+        choices=STATUS_CHOICES,
+        default=0,
+        verbose_name='Статус'
+    )
     psychologist = models.ForeignKey(
         'users.MyUser',
         related_name='psychologist_consultations',
-        blank=True,
-        null=True,
         verbose_name='Психолог',
         on_delete=models.CASCADE
     )
@@ -35,6 +46,11 @@ class Consultation(models.Model):
     def __str__(self):
         return f'{self.date} {self.time} - {self.description}'
 
+    def save(self, *args, **kwargs):
+        if not self.description:
+            self.description = "Причина обращения к психологу"
+        super().save(*args, **kwargs)
+
     class Meta:
         verbose_name = "Консультация"
         verbose_name_plural = "Консультации"
@@ -47,11 +63,16 @@ class Training(models.Model):
         (2, 'Проведен'),
     ]
     name = models.CharField(max_length=500, verbose_name='Название')
-    description = models.TextField(verbose_name='Описание')
+    description = HTMLField(verbose_name='Описание')
+    price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name='Стоимость'
+    )
     date = models.DateField(verbose_name='Дата')
     time = models.TimeField(verbose_name='Время')
     count_clients = models.PositiveIntegerField(
-        verbose_name='Количество участников',
+        verbose_name='Максимальное количество участников',
         validators=[MaxValueValidator(20)]
     )
     status = models.IntegerField(choices=STATUS_CHOICES, default=0, verbose_name='Статус')
@@ -63,7 +84,8 @@ class Training(models.Model):
     clients = models.ManyToManyField(
         'users.MyUser',
         verbose_name='Клиенты',
-        related_name='client_training'
+        related_name='client_training',
+        blank=True,
     )
 
     def __str__(self):
@@ -72,3 +94,4 @@ class Training(models.Model):
     class Meta:
         verbose_name = "Тренинг"
         verbose_name_plural = "Тренинги"
+

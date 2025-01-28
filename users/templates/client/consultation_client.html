@@ -1,0 +1,72 @@
+{% extends 'client/client.html' %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/styles.css'%}" />
+{% endblock %}
+
+{% block title %}
+    Консультации {{ user.username }}
+{% endblock %}
+
+{% block client_content %}
+    <div class="container">
+        <h4 class="card-text text-center text-success fst-italic">Ваши индивидуальные консультации</h4>
+        {% for consultation in client_consultations %}
+            <div class="bg-light m-1 p-3 rounded">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <small class="text-muted">
+                        <i class="bi bi-clock me-1"></i>
+                        {{consultation.date}}, {{ consultation.date|date:"l" }}, {{consultation.time|time:'H:i'}}
+                    </small>
+                    <small class="text-muted">
+                        <i class="bi {% if consultation.status == 2 %}bi-exclamation-circle text-warning
+                                     {% elif consultation.status == 1 %}bi bi-x-circle text-danger
+                                     {% else %} bi bi-check-circle text-success
+                                     {% endif %} me-1"></i>
+                        {{ consultation.get_status_display }}
+                    </small>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="mb-2">
+                        <small class="text-muted">
+                            <i class="bi bi-person-fill me-1"></i>
+                            Специалист:
+                        </small>
+                        {{consultation.psychologist.first_name}}
+                        {{consultation.psychologist.last_name}} -
+                        {{consultation.psychologist.job_title}}
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="mb-2">
+                        <small class="text-muted">
+                            <i class="bi bi-chat me-1"></i>
+                            Причина обращения к психологу:
+                        </small>
+                    </div>
+                </div>
+                <div class="m-2">
+                    {{consultation.description}}
+                </div>
+                {% if consultation.status == 2 %}
+                    <div class="d-flex justify-content-end align-items-center mb-2">
+                        <div class="mb-2">
+                            <small class="text-muted">
+                                <form action="{% url 'events:consultation_cancel' consultation.pk %}"
+                                      method="post" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit"
+                                            class="btn btn-danger btn-block m-1"
+                                            onclick="return confirm('Вы уверены, что хотите отменить эту консультацию?');">
+                                        <i class="bi bi-x-circle m-1"></i>
+                                        Отменить
+                                    </button>
+                                </form>
+                            </small>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

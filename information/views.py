@@ -22,8 +22,8 @@ menu = [
     {"title": "Наши специалисты", "alias": "users:specialists", "icon": "bi-person"},
     {"title": "Советы психолога", "alias": "information:articles", "icon": "bi-chat-dots"},
     # {"title": "Тестирование", "alias": "testing", "icon": "bi-check-circle"},
-    # {"title": "Консультации", "alias": "consultations", "icon": "bi-clipboard"},
-    # {"title": "Тренинги", "alias": "trainings", "icon": "bi-briefcase"},
+    {"title": "Консультации", "alias": "events:consultations", "icon": "bi-clipboard"},
+    {"title": "Тренинги", "alias": "events:trainings", "icon": "bi-briefcase"},
     {"title": "Отзывы клиентов", "alias": "information:comments", "icon": "bi-list-stars"},
     {"title": "Ваши предложения", "alias": "information:offers", "icon": "bi-lightbulb"}
 ]
@@ -46,7 +46,7 @@ class MainView(TemplateView):
 
 class OfferView(ListView):
     model = Offer
-    template_name = 'offer.html'
+    template_name = 'offer/offer.html'
     context_object_name = 'offers'
     paginate_by = 3
 
@@ -82,7 +82,7 @@ class OfferView(ListView):
 
 class CommentView(ListView):
     model = Comment
-    template_name = 'comment.html'
+    template_name = 'comment/comment.html'
     context_object_name = 'comments'
     paginate_by = 3
 
@@ -116,7 +116,7 @@ class CommentView(ListView):
 
 class ClientCommentView(ListView):
     model = Comment
-    template_name = 'client_comment.html'
+    template_name = 'client/client_comment.html'
     context_object_name = 'client_comments'
 
     def get_queryset(self):
@@ -186,7 +186,7 @@ class AnswerCommentView(ListView):
 
 class ArticlesView(ListView):
     model = Article
-    template_name = 'articles.html'
+    template_name = 'article/articles.html'
     context_object_name = 'articles'
     paginate_by = 4
 
@@ -219,7 +219,7 @@ class ArticlesView(ListView):
 
 class ArticlesByCategoryView(ListView):
     model = Article
-    template_name = 'articles.html'
+    template_name = 'article/articles.html'
     context_object_name = 'articles'
     paginate_by = 4
 
@@ -247,7 +247,7 @@ class ArticlesByCategoryView(ListView):
 
 class ArticleDetailView(DetailView):
     model = Article
-    template_name = 'article_detail.html'
+    template_name = 'article/article_detail.html'
     context_object_name = 'article'
 
     def get_queryset(self):
@@ -308,3 +308,38 @@ class PositiveGradeArticleView(LoginRequiredMixin, View):
             'negative_grade_count': article.negative_grade.count()
         })
 
+
+class CommentsByCategoryView(ListView):
+    model = Comment
+    template_name = 'comment/comment.html'
+    context_object_name = 'comments'
+    paginate_by = 3
+
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            return (Comment.objects.prefetch_related('answer').
+                    filter(category=self.kwargs.get('category')).
+                    select_related('author').order_by('-published_date'))
+        else:
+            return (Comment.objects.filter(status=2, category=self.kwargs.get('category')).
+                    prefetch_related('answer').
+                    select_related('author').order_by('-published_date'))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['menu'] = menu
+        context['page_alias'] = 'information:comments'
+        context['form'] = CommentForm()
+        context['answer_form'] = AnswerForm()
+        context['is_blacklisted'] = self.request.user.groups.filter(name='Черный список').exists()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.author = request.user
+            comment.save()
+            messages.success(request, 'Ваш отзыв добавлен и находится на модерации!')
+            page = request.POST.get('page', 1)
+            return redirect(f"{reverse('information:comments_category')}?page={page}")

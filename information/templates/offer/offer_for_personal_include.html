@@ -1,0 +1,43 @@
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/styles.css'%}" />
+{% endblock %}
+
+<h4 class="text-center m-2 text-primary">Предложения и пожелания пользователей:</h4>
+    {% for offer in offers %}
+        <div class="bg-light other-comment mb-3 p-3 rounded">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="mb-0">
+                    {% if offer.author.avatar %}
+                        <img src="{{ offer.author.avatar.url }}" alt="Avatar" class="rounded-circle img-fluid me-2"
+                             style="width: 30px; height: 30px;">
+                    {% else %}
+                        <i class="bi bi-person-fill me-1"></i>
+                    {% endif %}
+                    {% if offer.author.username %}
+                        {{ offer.author.username }}
+                    {% else %}
+                        Пользователь удалён
+                    {% endif %}
+                </h6>
+                <small class="text-muted">
+                    <i class="bi bi-clock me-1"></i>{{ offer.published_date|date:"d M Y H:i" }}
+                </small>
+            </div>
+            <div class="mb-2">{{ offer.text }}</div>
+            <button class="btn btn-sm btn-info reply-button" data-offer-id="{{ offer.id }}">
+                <i class="bi bi-reply"></i> Ответить
+            </button>
+                <div class="reply-form" id="reply-form-{{ offer.id }}" style="display: none;">
+                    <form method="post" action="{% url 'information:answers' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="offer_id" value="{{ offer.id }}">
+                        {{ answer_form.as_p }}
+                        <input type="hidden" name="page" value="{{ request.GET.page }}">
+                        <button type="submit" class="btn btn-success">Отправить</button>
+                        <button type="button" class="btn btn-danger cancel-button">Отмена</button>
+                    </form>
+                </div>
+                {% include 'answer/answer_include.html' %}
+        </div>
+    {% endfor %}

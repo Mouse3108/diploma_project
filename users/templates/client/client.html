@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/styles.css'%}" />
+{% endblock %}
+
+{% block title %}
+    {{ client.username }}
+{% endblock %}
+
+{% block content %}
+<h1 class="text-center m-1 text-success fst-italic">Ваш личный кабинет</h1>
+<div class="container mx-auto mb-2">
+    <div class="row align-items-center">
+        {% if user.avatar %}
+            <div class="col-md-3 mb-3 align-self-start">
+                <img src="{{ user.avatar.url }}" alt="Avatar" class="img-fluid rounded">
+            </div>
+        {% endif %}
+        <div class="{% if user.avatar %}col-md-6{% else %}col-9{% endif %} align-self-start">
+            {% block client_content %}
+            <div class="row align-items-center">
+                <div class="col-md-5 align-self-start">
+                    <div class="card">
+                        <div class="card-body">
+                            <p class="card-text text-success fst-italic">Имя пользователя</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-7 mb-3 align-self-start">
+                    <div class="card">
+                        <div class="card-body">
+                            <p class="card-text">{{ client.username }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5 align-self-start">
+                    <div class="card">
+                        <div class="card-body">
+                            <p class="card-text text-success fst-italic">Имя</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-7 mb-3 align-self-start">
+                    <div class="card">
+                        <div class="card-body">
+                            {% if client.first_name %}
+                                <p class="card-text">{{ client.first_name }}</p>
+                            {% else %}
+                                <p class="card-text text-danger">Информация отсутствует</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5 align-self-start">
+                    <div class="card">
+                        <div class="card-body">
+                            <p class="card-text text-success fst-italic">Фамилия</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-7 mb-3 align-self-start">
+                    <div class="card">
+                        <div class="card-body">
+                            {% if client.last_name %}
+                                <p class="card-text">{{ client.last_name }}</p>
+                            {% else %}
+                                <p class="card-text text-danger">Информация отсутствует</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5 align-self-start">
+                    <div class="card">
+                        <div class="card-body">
+                            <p class="card-text text-success fst-italic">Дата рождения</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-7 mb-3 align-self-start">
+                    <div class="card">
+                        <div class="card-body">
+                            {% if client.date_birth %}
+                                <p class="card-text">{{ client.date_birth }}</p>
+                            {% else %}
+                                <p class="card-text text-danger">Информация отсутствует</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5 align-self-start">
+                    <div class="card">
+                        <div class="card-body">
+                            <p class="card-text text-success fst-italic">Адрес электронной почты</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-7 mb-3 align-self-start">
+                    <div class="card">
+                        <div class="card-body">
+                            {% if client.email %}
+                                <p class="card-text">{{ client.email }}</p>
+                            {% else %}
+                                <p class="card-text text-danger">Информация отсутствует</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5 align-self-start">
+                    <div class="card">
+                        <div class="card-body">
+                            <p class="card-text text-success fst-italic">Телефон</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-7 mb-3 align-self-start">
+                    <div class="card">
+                        <div class="card-body">
+                            {% if client.phone %}
+                                <p class="card-text">{{ client.phone }}</p>
+                            {% else %}
+                                <p class="card-text text-danger">Информация отсутствует</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endblock%}
+        </div>
+        {% include 'client/client_menu_include.html' %}
+    </div>
+</div>
+{% endblock %}

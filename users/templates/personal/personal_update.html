@@ -1,0 +1,38 @@
+{% extends 'personal/personal.html' %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/styles.css'%}" />
+{% endblock %}
+
+{% block title %}
+    Редактирование {{ user.username }}
+{% endblock %}
+
+{% block personal_content %}
+<div class="card">
+    <div class="card-header">
+        <h4 class="card-text text-center text-success fst-italic">Измените необходимые данные</h4>
+    </div>
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="mb-3">
+                    <label for="{{ field.id_for_label }}" class="form-label fst-italic">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ field.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-success m-2">Сохранить</button>
+                <a href="{% url 'users:personal' user.pk %}" class="btn btn-danger m-2">Отмена</a>
+            </div>
+        </form>
+        <a href="{% url 'users:change_password_personal' %}" class="btn btn-info m-2">Изменить пароль</a>
+    </div>
+</div>
+{% endblock %}

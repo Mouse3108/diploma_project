@@ -1,0 +1,16 @@
+<div class="col-md-3 mb-3 align-self-start d-flex flex-column">
+    <a href="{% url 'users:personal' user.pk %}"
+       class="btn {% if request.resolver_match.view_name == 'users:personal' %}btn-primary
+       {% else %}btn-info{% endif %} btn-block mb-2">
+       <span><i class="bi bi-house m-2"></i>Личный кабинет</span>
+    </a>
+    <a href="{% url 'admin:index' %}"
+       class="btn btn-info btn-block mb-2" target="_blank" rel="noopener noreferrer">
+       <span><i class="bi bi-gear m-2"></i>Админпанель</span>
+    </a>
+    <a href="{% url 'users:personal_update' user.pk %}"
+       class="btn {% if request.resolver_match.view_name == 'users:personal_update' %}btn-primary
+       {% else %}btn-info{% endif %} btn-block mb-2">
+       <span><i class="bi bi-pencil m-2"></i>Редактировать данные</span>
+    </a>
+</div>

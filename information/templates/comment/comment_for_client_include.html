@@ -1,0 +1,99 @@
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/styles.css'%}" />
+{% endblock %}
+
+{% if user.is_authenticated %}
+    {% if is_blacklisted %}
+        <h2 class="text-center m-2 text-danger">
+            К сожалению, Вы находитесь в черном списке и не можете оставлять отзывы
+        </h2>
+    {% else %}
+        <h1 class="text-center m-2 text-primary">Оцените нашу работу!</h1>
+        <form method="post" action="{% url 'information:comments' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="hidden" name="page" value="{{ request.GET.page }}">
+            <button type="submit" class="btn btn-sm btn-success m-1">Отправить</button>
+        </form>
+    {% endif %}
+{% else %}
+    <h1 class="text-center m-2 text-primary">Отзывы наших клиентов</h1>
+    <h5 class="text-center m-2">Вы сможете оставить свой отзыв после регистрации</h5>
+{% endif %}
+<hr>
+<h4 class="text-center m-3 text-primary">
+    Вы можете ознакомиться со всеми отзывами или выбрать интересующую Вас категорию
+</h4>
+<div class="row align-items-center">
+    <div class="col-md-2 mb-3 align-self-start flex-column
+        {% if request.resolver_match.view_name != 'information:comments_category' %}d-none{% endif %}">
+            <a href="{% url 'information:comments' %}"
+                class="btn btn-success d-md-flex align-items-center">
+                <i class="bi bi-arrow-left-circle-fill"></i>
+                <span class="ms-2">К списку отзывов</span>
+            </a>
+    </div>
+    <div class="col-md-2 mb-3 align-self-start d-flex flex-column">
+        <a href="{% url 'information:comments_category' 0 %}"
+            class="btn {% if request.resolver_match.view_name == 'information:comments_category' and request.resolver_match.kwargs.category == 0 %}btn-primary
+            {% else %}btn-info{% endif %} btn-block mb-2">
+            <span>Общая оценка</span>
+        </a>
+    </div>
+    <div class="col-md-2 mb-3 align-self-start d-flex flex-column">
+        <a href="{% url 'information:comments_category' 1 %}"
+            class="btn {% if request.resolver_match.view_name == 'information:comments_category' and request.resolver_match.kwargs.category == 1 %}btn-primary
+            {% else %}btn-info{% endif %} btn-block mb-2">
+            <span>Оценка специалиста</span>
+        </a>
+    </div>
+    <div class="col-md-2 mb-3 align-self-start d-flex flex-column">
+        <a href="{% url 'information:comments_category' 2 %}"
+            class="btn {% if request.resolver_match.view_name == 'information:comments_category' and request.resolver_match.kwargs.category == 2 %}btn-primary
+            {% else %}btn-info{% endif %} btn-block mb-2">
+            <span>Оценка статьи</span>
+        </a>
+    </div>
+    <div class="col-md-2 mb-3 align-self-start d-flex flex-column">
+        <a href="{% url 'information:comments_category' 3 %}"
+            class="btn {% if request.resolver_match.view_name == 'information:comments_category' and request.resolver_match.kwargs.category == 3 %}btn-primary
+            {% else %}btn-info{% endif %} btn-block mb-2">
+            <span>Оценка тренинга</span>
+        </a>
+    </div>
+</div>
+
+{% for comment in comments %}
+    {% if comment.author == user %}
+        <div class="m-1 p-3 rounded" style="background-color: #d4edda;">
+    {% else %}
+        <div class="bg-light m-1 p-3 rounded">
+    {% endif %}
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="mb-0">
+                {% if comment.author.avatar %}
+                    <img src="{{ comment.author.avatar.url }}" alt="Avatar" class="rounded-circle img-fluid me-2"
+                         style="width: 30px; height: 30px;">
+                {% else %}
+                    <i class="bi bi-person-fill me-1"></i>
+                {% endif %}
+                    {% if comment.author.username %}
+                        {{ comment.author.username }}
+                    {% else %}
+                        Пользователь удалён
+                    {% endif %}
+            </h6>
+            <small class="text-muted">
+                <i class="bi bi-clock me-1"></i>
+                {{ comment.published_date|date:"d M Y H:i" }}
+            </small>
+        </div>
+        <small class="text-muted">
+            <i class="bi bi-list me-1"></i>
+            {{ comment.get_category_display }}
+        </small>
+        <div class="mb-2">{{ comment.text }}</div>
+    </div>
+    {% include 'answer/comment_answer_include.html' %}
+{% endfor %}

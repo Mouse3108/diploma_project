@@ -37,7 +37,7 @@ class UserRegisterForm(UserCreationForm):
 
 class UserLoginForm(AuthenticationForm):
     username = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Введите имя'}),
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Введите имя или email'}),
         label='Имя пользователя'
     )
     password = forms.CharField(
@@ -83,3 +83,4 @@ class PersonalUpdateForm(forms.ModelForm):
         if MyUser.objects.exclude(pk=self.instance.pk).filter(email=email).exists():
             raise forms.ValidationError("Пользователь с таким email уже существует")
         return email
+

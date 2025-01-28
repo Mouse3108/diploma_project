@@ -1,0 +1,127 @@
+{% extends 'consultation/consultations.html' %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/styles.css'%}" />
+{% endblock %}
+
+{% block title %}
+    Запись на консультацию {{ user.username }}
+{% endblock %}
+
+{% block consultation_content %}
+    <div class="card m-2">
+    <div class="card-header">
+        <h4 class="card-text text-center text-success fst-italic">Заполните все поля и подтвердите запись</h4>
+    </div>
+    <div class="card-body">
+        <div class="row align-items-center">
+            <div class="col-md-4 m-3 align-self-start">
+                <div class="row row-cols-2 align-items-center">
+                    <div class="col-md-4 mb-1 align-self-start">
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="card-text text-success fst-italic">Дата</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8 mb-1 align-self-start">
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="card-text fst-italic">
+                                    {{consultation.date}} - {{consultation.date|date:"l"}}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-1 align-self-start">
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="card-text text-success fst-italic">Время</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8 mb-1 align-self-start">
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="card-text fst-italic">{{consultation.time|time:'H:i'}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-1 align-self-start">
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="card-text text-success fst-italic">Специалист</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8 mb-1 align-self-start">
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="card-text fst-italic">
+                                    {{consultation.psychologist.first_name}}
+                                    {{consultation.psychologist.last_name}}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-1 align-self-start">
+                    </div>
+                    <div class="col-md-8 mb-1 align-self-start">
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="card-text fst-italic">
+                                    {{consultation.psychologist.job_title}}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-1 align-self-start">
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="card-text text-success fst-italic">Стоимость</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8 mb-1 align-self-start">
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="card-text fst-italic">
+                                    {{consultation.price}} руб.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 m-3 align-self-start">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label fst-italic
+                                {% if field.label == 'Обязательно заполните это поле!' %}text-danger
+                                {% endif %}">
+                                {{ field.label }}
+                            </label>
+                            {{ field }}
+                        </div>
+                    {% endfor %}
+                    {% if form.non_field_errors %}
+                        {% for field in form %}
+                            {% if field.errors %}
+                                <div class="alert alert-danger">
+                                    {{ field.errors }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success m-2">Сохранить</button>
+                        <a href="{% url 'events:consultations' %}" class="btn btn-danger m-2">Отмена</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends 'client/client.html' %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/styles.css'%}" />
+{% endblock %}
+
+{% block title %}
+    Тренинги {{ user.username }}
+{% endblock %}
+
+{% block client_content %}
+    <div class="container">
+        <h4 class="card-text text-center text-success fst-italic">Ваши тренинги</h4>
+        {% for training in client_trainings %}
+            <div class="bg-light m-1 p-3 rounded">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <small class="text-muted">
+                        <i class="bi bi-clock me-1"></i>
+                        {{training.date}}, {{ training.date|date:"l" }}, {{training.time|time:'H:i'}}
+                    </small>
+                    <small class="text-muted">
+                        <i class="bi {% if consultation.status == 0 %}bi-exclamation-circle text-warning
+                                     {% else %} bi bi-check-circle text-success
+                                     {% endif %} me-1"></i>
+                        {{ training.get_status_display }}
+                    </small>
+                </div>
+                <h5 class="text-center">Тренинг "{{training.name}}"</h5>
+                <div class="row align-items-center">
+                    <div class="col-md-4 align-self-start">
+                        <small class="text-muted">
+                            <i class="bi bi-person-fill me-1"></i>
+                            Ведущие тренинга:
+                        </small>
+                    </div>
+                    <div class="col-md-8 align-self-start">
+                        {% for psychologist in training.psychologists.all %}
+                            <div class="mb-2">
+                                {{psychologist.first_name}}
+                                {{psychologist.last_name}} -
+                                {{psychologist.job_title}}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% for psychologist in training.psychologists.all %}
+                    {% if psychologist.job_title == 'Детский психолог' %}
+                        <div class="mb-2">
+                            <small class="text-muted">
+                            <i class="bi bi-person-fill-add me-1"></i>
+                            Вместе с Вами в тренинге принимает участие Ваш ребенок:
+                            </small>
+                        </div>
+                        <div class="m-2">
+                            {{user.job_speciality}}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                {% if training.status == 0 %}
+                    <div class="d-flex justify-content-end align-items-center">
+                        <div>
+                            <small class="text-muted">
+                                <form action="{% url 'events:training_cancel' training.pk %}"
+                                      method="post" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit"
+                                            class="btn btn-danger btn-block"
+                                            onclick="return confirm('Вы уверены, что не хотите участвовать в мероприятии?');">
+                                        <i class="bi bi-x-circle m-1"></i>
+                                        Не буду участвовать
+                                    </button>
+                                </form>
+                            </small>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

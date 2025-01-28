@@ -12,7 +12,7 @@ urlpatterns = [
     path('', MainView.as_view(), name='main'),
     path('information/', include('information.urls')),
     path('users/', include('users.urls')),
-    # path('events/', include('events.urls')),
+    path('events/', include('events.urls')),
     # path('tests/', include('tests.urls')),
     path('tinymce/', include('tinymce.urls')),
 

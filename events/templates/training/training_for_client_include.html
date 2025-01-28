@@ -1,0 +1,72 @@
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/styles.css'%}" />
+{% endblock %}
+
+{% if user.is_authenticated %}
+    {% if is_blacklisted %}
+        <h2 class="text-center m-2 text-danger">
+            К сожалению, Вы находитесь в черном списке и не можете зарегистрироваться на мероприятие
+        </h2>
+    {% else %}
+        <h3 class="text-center m-2">
+            Выберите интересующее Вас мероприятие,
+        </h3>
+        <h3 class="text-center m-2">
+            и нажмите кнопку "Принять участие"
+        </h3>
+    {% endif %}
+{% else %}
+    <h5 class="text-center m-2">
+        Записаться на тренинг могут только зарегистрированные пользователи!
+    </h5>
+{% endif %}
+<div class="row align-items-center m-3">
+    {% for training in trainings %}
+        <div class="col-md-6 align-self-start d-flex flex-column">
+            <div class="card m-1">
+                <div class="card-body">
+                    <h4 class="card-title text-center text-success">{{ training.name }}</h4>
+                    <div class="card-text">{{ training.description|safe }}</div>
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                        <div>
+                            <h6 class="card-title fst-italic">Начало мероприятия:</h6>
+                            <i class="bi bi-clock"></i>
+                            {{ training.date|date:"l" }} {{ training.date}} в {{training.time|time:'H:i'}}
+                        </div>
+                        <div>
+                            <h6 class="card-title fst-italic">Количество участников:</h6>
+                            <i class="bi bi-person-lines-fill me-1"></i>
+                            {{training.clients.all.count}} из {{training.count_clients}}
+                        </div>
+                    </div>
+                    <h6 class="card-title mt-2 fst-italic">Ведущие тренинга:</h6>
+                    {% for psychologist in training.psychologists.all %}
+                        <i class="bi bi-person-fill me-1"></i>
+                        {{ psychologist.job_title }} - {{ psychologist.first_name }}
+                        {{ psychologist.last_name }}
+                        <br>
+                    {% endfor %}
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                        <div>
+                            <h6 class="card-title fst-italic">Стоимость:</h6>
+                            <i class="bi bi-tags me-1"></i>
+                            {{training.price}} руб.
+                        </div>
+                        <div>
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'events:training_update' training.pk %}"
+                                    class="btn btn-success d-none m-2 d-md-flex align-items-center
+                                          {% if training.count_clients == training.clients.all.count or is_blacklisted%}
+                                          disabled{% endif %}">
+                                    <i class="bi bi-briefcase-fill"></i>
+                                    <span class="ms-2">Принять участие</span>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>

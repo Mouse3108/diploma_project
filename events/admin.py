@@ -27,7 +27,7 @@ class Training(admin.ModelAdmin):
         'date', 'time', 'name'
     )
     search_fields = ('name',)
-    list_filter = ('status', 'count_clients',)
+    list_filter = ('status', 'count_clients', 'psychologists',)
     list_editable = ('status', 'price', 'count_clients',)
     filter_horizontal = ('psychologists', 'clients',)
 

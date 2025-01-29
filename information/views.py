@@ -21,7 +21,7 @@ menu = [
     {"title": "Главная", "alias": "main", "icon": "bi-house"},
     {"title": "Наши специалисты", "alias": "users:specialists", "icon": "bi-person"},
     {"title": "Советы психолога", "alias": "information:articles", "icon": "bi-chat-dots"},
-    # {"title": "Тестирование", "alias": "testing", "icon": "bi-check-circle"},
+    {"title": "Тестирование", "alias": "tests:testing", "icon": "bi-check-circle"},
     {"title": "Консультации", "alias": "events:consultations", "icon": "bi-clipboard"},
     {"title": "Тренинги", "alias": "events:trainings", "icon": "bi-briefcase"},
     {"title": "Отзывы клиентов", "alias": "information:comments", "icon": "bi-list-stars"},
@@ -259,6 +259,7 @@ class ArticleDetailView(DetailView):
         context['menu'] = menu
         context['page_alias'] = 'information:articles'
         context['categories'] = Category.objects.order_by("name")
+        context['is_blacklisted'] = self.request.user.groups.filter(name='Черный список').exists()
         return context
 
     def get(self, request, *args, **kwargs):

@@ -4,6 +4,44 @@
 {% endblock %}
 
 <h4 class="text-center m-2 text-primary">Отзывы пользователей:</h4>
+<div class="row align-items-center">
+    <div class="col-md-2 mb-3 align-self-start flex-column
+        {% if request.resolver_match.view_name != 'information:comments_category' %}d-none{% endif %}">
+            <a href="{% url 'information:comments' %}"
+                class="btn btn-success d-md-flex align-items-center">
+                <i class="bi bi-arrow-left-circle-fill"></i>
+                <span class="ms-2">К списку отзывов</span>
+            </a>
+    </div>
+    <div class="col-md-2 mb-3 align-self-start d-flex flex-column">
+        <a href="{% url 'information:comments_category' 0 %}"
+            class="btn {% if request.resolver_match.view_name == 'information:comments_category' and request.resolver_match.kwargs.category == 0 %}btn-primary
+            {% else %}btn-info{% endif %} btn-block mb-2">
+            <span>Общая оценка</span>
+        </a>
+    </div>
+    <div class="col-md-2 mb-3 align-self-start d-flex flex-column">
+        <a href="{% url 'information:comments_category' 1 %}"
+            class="btn {% if request.resolver_match.view_name == 'information:comments_category' and request.resolver_match.kwargs.category == 1 %}btn-primary
+            {% else %}btn-info{% endif %} btn-block mb-2">
+            <span>Оценка специалиста</span>
+        </a>
+    </div>
+    <div class="col-md-2 mb-3 align-self-start d-flex flex-column">
+        <a href="{% url 'information:comments_category' 2 %}"
+            class="btn {% if request.resolver_match.view_name == 'information:comments_category' and request.resolver_match.kwargs.category == 2 %}btn-primary
+            {% else %}btn-info{% endif %} btn-block mb-2">
+            <span>Оценка статьи</span>
+        </a>
+    </div>
+    <div class="col-md-2 mb-3 align-self-start d-flex flex-column">
+        <a href="{% url 'information:comments_category' 3 %}"
+            class="btn {% if request.resolver_match.view_name == 'information:comments_category' and request.resolver_match.kwargs.category == 3 %}btn-primary
+            {% else %}btn-info{% endif %} btn-block mb-2">
+            <span>Оценка тренинга</span>
+        </a>
+    </div>
+</div>
     {% for comment in comments %}
         <div class="bg-light other-comment mb-3 p-3 rounded">
             <div class="d-flex justify-content-between align-items-center mb-2">

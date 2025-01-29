@@ -114,6 +114,47 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="{% static 'js/main.js' %}"></script>
+    <script>
+    let correctAnswers = 0;
+    function answer(currentQuestionId, totalQuestions, correctAnswer) {
 
+        const selectedAnswer = document.querySelector('input[name="question' + currentQuestionId + '"]:checked');
+        if (!selectedAnswer) {
+            alert('!!! ВЫ НЕ ВЫБРАЛИ ВАРИАНТ ОТВЕТА !!!');
+            return;
+        }
+        if (selectedAnswer.value === correctAnswer) {
+            correctAnswers += 1;
+        }
+        document.getElementById('question' + currentQuestionId).style.display = 'none';
+        if (currentQuestionId < totalQuestions) {
+            document.getElementById('question' + (currentQuestionId + 1)).style.display = 'block';
+        } else {
+            finishTest(correctAnswers);
+        }
+    }
+    function finishTest(correctAnswers) {
+        const csrfToken = document.getElementById('csrf_token').value;
+        const score = correctAnswers;
+
+        fetch("{% url 'tests:funny_test_result' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrfToken
+            },
+            body: JSON.stringify({ score: score })
+        })
+
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('result-container').style.display = 'block';
+                document.getElementById('balls').innerText = `Ваш результат в балах ${correctAnswers}.`;
+                document.getElementById('result').innerHTML = data.result;
+            }
+        })
+    }
+  </script>
   </body>
 </html>

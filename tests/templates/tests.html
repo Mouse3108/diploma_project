@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/styles.css'%}" />
+{% endblock %}
+
+{% block title %}
+    Тестирование
+{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated and user.is_staff %}
+    <h3 class="text-center m-2 text-primary fst-italic">
+        Наши тесты
+    </h3>
+{% else %}
+    <h3 class="text-center m-2 text-primary fst-italic">
+        Проверьте свои способности!
+    </h3>
+    <h4 class="text-center m-2 text-primary fst-italic">
+        Предлагаем Вам небольшое тестирование
+    </h4>
+{% endif %}
+{% if not user.is_authenticated %}
+    <h5 class="text-center text-danger m-2">
+        Войдите или зарегистрируйтесь, иначе Ваши результаты не сохраняться!
+    </h5>
+{% endif %}
+<div class="row row-cols-1 row-cols-md-3 g-4 m-2">
+    <div class="col">
+        <div class="card">
+            <h4 class="card-title text-center text-success p-1">
+                Тест на сообразительность
+            </h4>
+            <h6 class="card-text text-center p-1 text-muted">
+                Ответьте на пять простых вопросов -
+            </h6>
+            <h6 class="card-text text-center p-1 text-muted">
+                и узнаете на сколько у Вас развита логика
+            </h6>
+            <a href="{% url 'tests:funny_test' %}"
+               class="btn btn-success
+                     {% if user.is_authenticated and user.is_staff %}disabled{% endif %}">
+                <i class="bi bi-check2-circle"></i>
+                <span class="d-none d-sm-inline">Пройти тест</span>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

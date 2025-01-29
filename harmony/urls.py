@@ -13,7 +13,7 @@ urlpatterns = [
     path('information/', include('information.urls')),
     path('users/', include('users.urls')),
     path('events/', include('events.urls')),
-    # path('tests/', include('tests.urls')),
+    path('tests/', include('tests.urls')),
     path('tinymce/', include('tinymce.urls')),
 
 ]

@@ -141,8 +141,10 @@ AUTHENTICATION_BACKENDS = [
 # Настройки для отправки писем (в консоль)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# Настройки для отправки писем (через SMTP сервер - реальные емейлы!)
-# НЕ РАБОТАЕТ ошибка: ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Basic Constraints of CA cert not marked critical (_ssl.c:1018)
+# Настройки для отправки писем (через SMTP сервер)
+# при отправке письма на почту происходит переход на нужную страницу, но письмо не отправляется:
+# в терминале - ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed:
+#               Basic Constraints of CA cert not marked critical (_ssl.c:1018)
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_HOST = os.getenv('EMAIL_HOST')
 # EMAIL_PORT = os.getenv('EMAIL_PORT')

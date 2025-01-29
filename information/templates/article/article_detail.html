@@ -62,7 +62,7 @@
                     <div class="card-text">{{ article.text|safe }}</div>
                     <div class="d-flex justify-content-between align-items-center mb    -2">
                         <div class="text-muted">
-                        {% if user.is_authenticated and not user.is_staff %}
+                        {% if user.is_authenticated and not user.is_staff and not is_blacklisted%}
                             <button id="positive_grade_button" class="btn btn-outline-success btn-sm"
                                     data-slug="{{ article.slug }}">
                                 <i class="bi {% if user in article.positive_grade.all %}bi-hand-thumbs-up-fill

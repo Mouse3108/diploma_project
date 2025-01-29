@@ -4,6 +4,10 @@
 {% endblock %}
 
 {% if not user.is_superuser %}
+<a href="{% url 'admin:events_training_changelist' %}?psychologists__id__exact={{ user.id }}&q="
+    class="btn btn-info btn-block ms-5" target="_blank" rel="noopener noreferrer">
+       <span><i class="bi bi-archive m-2"></i>Архив тренингов</span>
+</a>
 <h4 class="card-title text-center p-1 text-success">
     Ваше расписание:
 </h4>

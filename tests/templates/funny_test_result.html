@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/styles.css'%}" />
+{% endblock %}
+
+{% block title %}
+    Результат теста на сообразительность
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center">
+    <a href="{% url 'tests:testing' %}"
+       class="btn btn-success d-flex m-2 align-items-center">
+        <i class="bi bi-arrow-left-circle-fill fs-4"></i>
+        <span class="ms-2">К списку тестов</span>
+    </a>
+</div>
+<div id="question-container" class="container mx-auto mb-2">
+    <div class="row align-items-center">
+        <div class="col-md-3 mb-3 align-self-start"></div>
+        <div class="col-md-6 m-3 align-self-start">
+            <div class="card">
+                <div class="card-body">
+                    Вы проходили<strong>"Тест на сообразительность"</strong>
+                </div>
+                <div class="card-body">
+                    Ваш результат в балах - {{ bal }}
+                </div>
+                <div class="card-body">
+                    {{ result|safe }}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3 align-self-start"></div>
+    </div>
+</div>
+{% endblock %}

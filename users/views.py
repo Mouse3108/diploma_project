@@ -15,7 +15,6 @@ from django.views.generic import View, TemplateView, CreateView, UpdateView, Lis
 from django.views.generic.edit import FormMixin
 from .forms import *
 from information.urls import *
-# import json
 from django.utils.http import urlencode
 from urllib.parse import unquote
 from django.contrib.auth.views import LoginView as BaseLoginView
@@ -26,7 +25,7 @@ menu = [
     {"title": "Главная", "alias": "main", "icon": "bi-house"},
     {"title": "Наши специалисты", "alias": "users:specialists", "icon": "bi-person"},
     {"title": "Советы психолога", "alias": "information:articles", "icon": "bi-chat-dots"},
-    # {"title": "Тестирование", "alias": "testing", "icon": "bi-check-circle"},
+    {"title": "Тестирование", "alias": "tests:testing", "icon": "bi-check-circle"},
     {"title": "Консультации", "alias": "events:consultations", "icon": "bi-clipboard"},
     {"title": "Тренинги", "alias": "events:trainings", "icon": "bi-briefcase"},
     {"title": "Отзывы клиентов", "alias": "information:comments", "icon": "bi-list-stars"},
@@ -189,7 +188,6 @@ class PersonalDetailView(DetailView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         if self.object != request.user:
-            messages.error(request, 'Для просмотра информации о пользователях войдите в админпанель')
             return redirect(reverse('users:personal', kwargs={'pk': request.user.pk}))
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)

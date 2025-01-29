@@ -18,14 +18,13 @@ from datetime import datetime, date
 from django.utils import timezone
 from .forms import *
 from django.db.models import Q
-from django.db.models import Min
 
 
 menu = [
     {"title": "Главная", "alias": "main", "icon": "bi-house"},
     {"title": "Наши специалисты", "alias": "users:specialists", "icon": "bi-person"},
     {"title": "Советы психолога", "alias": "information:articles", "icon": "bi-chat-dots"},
-    # {"title": "Тестирование", "alias": "testing", "icon": "bi-check-circle"},
+    {"title": "Тестирование", "alias": "tests:testing", "icon": "bi-check-circle"},
     {"title": "Консультации", "alias": "events:consultations", "icon": "bi-clipboard"},
     {"title": "Тренинги", "alias": "events:trainings", "icon": "bi-briefcase"},
     {"title": "Отзывы клиентов", "alias": "information:comments", "icon": "bi-list-stars"},
@@ -136,6 +135,7 @@ class CancelConsultationClientView(LoginRequiredMixin, View):
             psychologist=consultation.psychologist,
             date=consultation.date,
             time=consultation.time,
+            price=consultation.price
         )
         messages.success(request, "Консультация отменена. "
                                   "Но Вы в любой момент можете записаться на новую консультацию")
@@ -154,7 +154,7 @@ class TrainingsView(ListView):
         if self.request.user and self.request.user.is_staff:
             return (Training.objects.prefetch_related('psychologists', 'clients').
                     filter(Q(date__gt=today) | Q(date=today, time__gt=current_time)).
-                    filter(psychologists__in=[self.request.user]).
+                    filter(psychologists=self.request.user).
                     order_by('date', 'time'))
         else:
             return (Training.objects.prefetch_related('psychologists', 'clients').

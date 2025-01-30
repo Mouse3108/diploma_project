@@ -17,11 +17,16 @@
     <a href="{% url 'users:client_consultations' user.pk %}"
        class="btn {% if request.resolver_match.view_name == 'users:client_consultations' %}btn-primary
        {% else %}btn-info{% endif %} btn-block mb-2">
-       <span><i class="bi bi-chat m-2"></i>Мои консультации</span>
+       <span><i class="bi bi-clipboard-data m-2"></i>Мои консультации</span>
     </a>
     <a href="{% url 'users:client_trainings' user.pk %}"
        class="btn {% if request.resolver_match.view_name == 'users:client_trainings' %}btn-primary
        {% else %}btn-info{% endif %} btn-block mb-2">
-       <span><i class="bi bi-book m-2"></i>Мои тренинги</span>
+       <span><i class="bi bi-briefcase-fill m-2"></i>Мои тренинги</span>
+    </a>
+    <a href="{% url 'users:client_testing' user.pk %}"
+       class="btn {% if request.resolver_match.view_name == 'users:client_testing' %}btn-primary
+       {% else %}btn-info{% endif %} btn-block mb-2">
+       <span><i class="bi bi-ui-checks m-2"></i>Мои тесты</span>
     </a>
 </div>

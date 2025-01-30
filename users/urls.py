@@ -2,6 +2,7 @@ from django.urls import path, reverse_lazy
 from users.views import *
 from information.views import *
 from events.views import *
+from tests.views import *
 from django.contrib.auth import views as auth_views
 
 app_name = 'users'
@@ -21,6 +22,7 @@ urlpatterns = [
     path('client/<int:pk>/comments/', ClientCommentView.as_view(), name='client_comments'),
     path('client/<int:pk>/consultations/', ClientConsultationView.as_view(), name='client_consultations'),
     path('client/<int:pk>/trainings/', ClientTrainingView.as_view(), name='client_trainings'),
+    path('client/<int:pk>/testing/', ClientTestsView.as_view(), name='client_testing'),
 
     path("password-reset/", auth_views.PasswordResetView.as_view(
             template_name="all_users/password_reset_form.html",

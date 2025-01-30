@@ -116,6 +116,28 @@
     <script src="{% static 'js/main.js' %}"></script>
     <script>
     let correctAnswers = 0;
+    let timer;
+    let timeLeft;
+
+    function startTimer() {
+        const timerTextElement = document.getElementById('timer_text');
+        const timerElement = document.getElementById('timer');
+        timeLeft = parseInt(timerElement.innerText, 10);
+
+        timerTextElement.innerText = `Оставшееся время в секундах:`;
+        timerElement.innerText = timeLeft;
+
+        timer = setInterval(() => {
+            if (timeLeft > 0) {
+                timeLeft--;
+                timerElement.innerText = timeLeft;
+            } else {
+                clearInterval(timer);
+                finishTest(correctAnswers); // Завершение теста при истечении времени
+            }
+        }, 1000);
+    }
+
     function answer(currentQuestionId, totalQuestions, correctAnswer) {
 
         const selectedAnswer = document.querySelector('input[name="question' + currentQuestionId + '"]:checked');
@@ -134,10 +156,20 @@
         }
     }
     function finishTest(correctAnswers) {
+
+        clearInterval(timer);
+        const questions = document.querySelectorAll('[id^="question"]');
+        questions.forEach(question => {
+            question.style.display = 'none';
+        });
+
         const csrfToken = document.getElementById('csrf_token').value;
         const score = correctAnswers;
 
-        fetch("{% url 'tests:funny_test_result' %}", {
+        const currentUrl = window.location.href;
+        const resultUrl = currentUrl + 'result/';
+
+        fetch(resultUrl, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -150,11 +182,14 @@
         .then(data => {
             if (data.success) {
                 document.getElementById('result-container').style.display = 'block';
-                document.getElementById('balls').innerText = `Ваш результат в балах ${correctAnswers}.`;
+                document.getElementById('balls').innerText = `Ваш результат в балах - ${correctAnswers}.`;
                 document.getElementById('result').innerHTML = data.result;
             }
         })
     }
+    window.onload = function() {
+        startTimer();
+    };
   </script>
   </body>
 </html>

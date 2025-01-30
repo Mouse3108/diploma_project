@@ -49,3 +49,31 @@ class FunnyTestResult(admin.ModelAdmin):
         'min_balls', 'max_balls'
     )
 
+
+@admin.register(WordExclusionTest)
+class WordExclusionTest(admin.ModelAdmin):
+    list_display = (
+        'question', 'answer1', 'answer2', 'answer3',
+        'answer4', 'answer5', 'correct_answer'
+    )
+    list_display_links = (
+        'question', 'answer1', 'answer2', 'answer3',
+        'answer4', 'answer5', 'correct_answer'
+    )
+
+
+@admin.register(WordExclusionTestResult)
+class WordExclusionTestResult(admin.ModelAdmin):
+    list_display = (
+        'min_balls', 'max_balls', 'result'
+    )
+    list_display_links = (
+        'min_balls', 'max_balls', 'result'
+    )
+    search_fields = (
+        'min_balls', 'max_balls'
+    )
+    list_filter = (
+        'min_balls', 'max_balls'
+    )
+

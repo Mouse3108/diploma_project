@@ -24,7 +24,7 @@ menu = [
     {"title": "Главная", "alias": "main", "icon": "bi-house"},
     {"title": "Наши специалисты", "alias": "users:specialists", "icon": "bi-person"},
     {"title": "Советы психолога", "alias": "information:articles", "icon": "bi-chat-dots"},
-    {"title": "Тестирование", "alias": "tests:testing", "icon": "bi-check-circle"},
+    {"title": "Тестирование", "alias": "tests:testing", "icon": "bi-ui-checks-grid"},
     {"title": "Консультации", "alias": "events:consultations", "icon": "bi-clipboard"},
     {"title": "Тренинги", "alias": "events:trainings", "icon": "bi-briefcase"},
     {"title": "Отзывы клиентов", "alias": "information:comments", "icon": "bi-list-stars"},

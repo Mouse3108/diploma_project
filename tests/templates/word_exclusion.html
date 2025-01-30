@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block title %}
-    Тест на сообразительность
+    Исключение слова
 {% endblock %}
 
 {% block content %}
@@ -23,7 +23,7 @@
             <h6 id="timer_text" class="text-danger"></h6>
             <h1 id="timer"
                 class="border border-danger rounded-circle text-danger d-flex justify-content-center align-items-center"
-                style="width: 80px; height: 80px;">30</h1>
+                style="width: 80px; height: 80px;">180</h1>
         </div>
         {% for question in questions_test %}
             <div class="col-md-6 m-3 align-self-start"
@@ -56,6 +56,42 @@
                                    for="{{ question.id }}answer2">
                                 {{ question.answer2 }}
                             </label>
+                        </div>
+                        <div class="form-check form-switch ms-5">
+                            <input type="radio"
+                                   value="{{ question.answer3 }}"
+                                   id="{{ question.id }}answer3"
+                                   name="question{{ question.id }}"
+                                   class="form-check-input fs-2"
+                                   role="switch">
+                            <label class="form-check-label fs-3"
+                                   for="{{ question.id }}answer3">
+                                {{ question.answer3 }}
+                            </label>
+                        </div>
+                        <div class="form-check form-switch ms-5">
+                            <input type="radio"
+                                   value="{{ question.answer4 }}"
+                                   id="{{ question.id }}answer4"
+                                   name="question{{ question.id }}"
+                                   class="form-check-input fs-2"
+                                   role="switch">
+                            <label class="form-check-label fs-3"
+                                   for="{{ question.id }}answer4">
+                                {{ question.answer4 }}
+                            </label>
+                        </div>
+                        <div class="form-check form-switch ms-5">
+                            <input type="radio"
+                                   value="{{ question.answer5 }}"
+                                   id="{{ question.id }}answer5"
+                                   name="question{{ question.id }}"
+                                   class="form-check-input fs-2"
+                                   role="switch">
+                            <label class="form-check-label fs-3"
+                                   for="{{ question.id }}answer5">
+                                {{ question.answer5 }}
+                            </label>
                         </div><br>
                         <div class="text-end">
                             <button onclick="answer({{ question.id }}, {{ questions_test.count }}, '{{ question.correct_answer }}')"
@@ -74,7 +110,7 @@
         <div id="result-container" class="col-md-6 m-3 align-self-start" style="display: none;">
             <div class="card">
                 <div class="card-body">
-                    Вы проходили <strong>"Тест на сообразительность"</strong>
+                    Вы проходили тест <strong>"Исключение слова"</strong>
                 </div>
                 <div id="balls" class="card-body"></div>
                 <div id="result" class="card-body"></div>

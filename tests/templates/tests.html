@@ -38,7 +38,35 @@
             <h6 class="card-text text-center p-1 text-muted">
                 и узнаете на сколько у Вас развита логика
             </h6>
+            <h6 class="card-text text-center p-1 text-muted fst-italic">
+                Время на выполнение теста - 30 секунд
+            </h6>
             <a href="{% url 'tests:funny_test' %}"
+               class="btn btn-success
+                     {% if user.is_authenticated and user.is_staff %}disabled{% endif %}">
+                <i class="bi bi-check2-circle"></i>
+                <span class="d-none d-sm-inline">Пройти тест</span>
+            </a>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card">
+            <h4 class="card-title text-center text-success p-1">
+                Тест "Исключение слова"
+            </h4>
+            <h6 class="card-text text-center p-1 text-muted">
+                Проверьте свои способности к обобщению
+            </h6>
+            <h6 class="card-text text-center p-1 text-muted">
+                и умение выделять существенные признаки
+            </h6>
+            <h6 class="card-text text-center p-1 text-muted">
+                Тест состоит из 15 заданий
+            </h6>
+            <h6 class="card-text text-center p-1 text-muted fst-italic">
+                Время на выполнение теста - 3 минуты
+            </h6>
+            <a href="{% url 'tests:test_word_exclusion' %}"
                class="btn btn-success
                      {% if user.is_authenticated and user.is_staff %}disabled{% endif %}">
                 <i class="bi bi-check2-circle"></i>
